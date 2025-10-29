@@ -103,16 +103,54 @@ main {
   margin: 0 auto;
 }
 
+/* Flip Card */
+.flip-card {
+  perspective: 1000px;
+  height: 600px;
+  cursor: pointer;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
 .product-card {
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 40px;
-  transition: all 0.3s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
-.product-card:hover {
+.flip-card .product-card {
+  transition: none;
+}
+
+.flip-card:not(.flipped):hover .product-card {
   transform: translateY(-4px);
   box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
   border-color: #d1d5db;
@@ -177,6 +215,78 @@ main {
 
 .product-link:hover {
   color: #4b5563;
+}
+
+/* Feature Grid */
+.product-features-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex: 1;
+}
+
+.feature-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.feature-item:hover {
+  background: #f3f4f6;
+}
+
+.feature-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.feature-title {
+  font-weight: 600;
+  color: #111827;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.feature-desc {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.flip-hint {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  color: #9ca3af;
+  font-size: 13px;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Tech Side */
+.tech-header {
+  margin-bottom: 1rem;
+}
+
+.tech-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+  font-family: monospace;
+}
+
+.tech-subtitle {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.tech-link {
+  margin-top: 1.5rem;
+  display: inline-block;
 }
 
 /* Contact Section */
@@ -296,6 +406,34 @@ main {
   }
 
   .product-link:hover {
+    color: #d1d5db;
+  }
+
+  .feature-item {
+    background: #374151;
+  }
+
+  .feature-item:hover {
+    background: #4b5563;
+  }
+
+  .feature-title {
+    color: #f9fafb;
+  }
+
+  .feature-desc {
+    color: #d1d5db;
+  }
+
+  .flip-hint {
+    color: #6b7280;
+  }
+
+  .tech-title {
+    color: #f9fafb;
+  }
+
+  .tech-subtitle {
     color: #d1d5db;
   }
 
