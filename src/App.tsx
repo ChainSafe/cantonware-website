@@ -228,7 +228,8 @@ get_canonical_resource_overview</code></pre>
         <section id="contact">
           <h2>About</h2>
           <p>
-            Cantonware builds precision tools for the financial industry. Both tools are production-ready and available now.
+            Cantonware is building precision tools for the financial industry. We're bringing the power of protocol engineering 
+            and blockchain infrastructure to DAML and Canton development—get ready for a new standard in smart contract development.
           </p>
           <p>
             Built by <a href="https://chainsafe.io/" target="_blank" rel="noopener noreferrer">ChainSafe</a>, bringing protocol engineering expertise from Ethereum, Polkadot, and Filecoin to accelerate Canton ecosystem growth 
