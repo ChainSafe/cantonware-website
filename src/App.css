@@ -105,7 +105,7 @@ main {
 
 /* Flip Card */
 .flip-card {
-  perspective: 1000px;
+  perspective: 1200px;
   height: 600px;
   cursor: pointer;
 }
@@ -114,12 +114,7 @@ main {
   position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 0.6s;
   transform-style: preserve-3d;
-}
-
-.flip-card.flipped .flip-card-inner {
-  transform: rotateY(180deg);
 }
 
 .flip-card-front,
@@ -150,11 +145,6 @@ main {
   transition: none;
 }
 
-.flip-card:not(.flipped):hover .product-card {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
-  border-color: #d1d5db;
-}
 
 .product-icon {
   width: 64px;
@@ -241,8 +231,28 @@ main {
 }
 
 .feature-icon {
-  font-size: 24px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #667eea;
+  background: #f3f4f6;
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.feature-item:first-child .feature-icon {
+  color: #f59e0b;
+}
+
+.feature-item:nth-child(2) .feature-icon {
+  color: #10b981;
+}
+
+.feature-item:nth-child(3) .feature-icon {
+  color: #3b82f6;
 }
 
 .feature-title {
@@ -411,6 +421,10 @@ main {
 
   .feature-item {
     background: #374151;
+  }
+
+  .feature-icon {
+    background: #4b5563;
   }
 
   .feature-item:hover {
