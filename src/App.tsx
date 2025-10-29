@@ -69,14 +69,15 @@ function App() {
                   </svg>
                 </div>
                 <h3 className="product-title">CI Automation</h3>
-                <p className="product-description">
-                      Production-ready GitHub Actions for DAML and Canton CI workflows. Eliminate manual setup with 
-                      one-line installations. Automate testing with DAML Sandbox and Canton LocalNet participant nodes.
-                    </p>
+                <ul className="product-description-list">
+                  <li>Production-ready GitHub Actions for DAML and Canton CI workflows</li>
+                  <li>Eliminate manual setup with one-line installations</li>
+                  <li>Automate testing with DAML Sandbox and Canton LocalNet participant nodes</li>
+                </ul>
                     <div className="product-features-grid">
                       <div className="feature-item">
                         <div className="feature-icon">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <polyline points="5 12 3 14 5 16"></polyline>
                             <polyline points="9 18 7 20 9 22"></polyline>
                             <polyline points="13 6 11 8 13 10"></polyline>
@@ -91,7 +92,7 @@ function App() {
                       </div>
                       <div className="feature-item">
                         <div className="feature-icon">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44L2.5 13.5a2.5 2.5 0 0 1 0-3l4.54-5.06A2.5 2.5 0 0 1 9.5 2z"></path>
                             <path d="M21 2l-4 4"></path>
                             <path d="M17 2l4 4"></path>
@@ -104,7 +105,7 @@ function App() {
                       </div>
                       <div className="feature-item">
                         <div className="feature-icon">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M5 12h14"></path>
                             <path d="M12 5l7 7-7 7"></path>
                           </svg>
@@ -143,7 +144,7 @@ function App() {
                       View on GitHub →
                     </a>
                     <div className="flip-hint" style={{ marginTop: '32px' }}>Click to flip back</div>
-                  </div>
+              </div>
                 </motion.div>
               </motion.div>
 
@@ -166,14 +167,15 @@ function App() {
                   </svg>
                 </div>
                     <h3 className="product-title">Canton MCP Server</h3>
-                <p className="product-description">
-                      DAML-safe by construction development platform with AI-powered assistance. Access 3,667+ verified 
-                      canonical resources. Validate code with compiler integration and formal verification.
-                    </p>
+                <ul className="product-description-list">
+                  <li>DAML-safe by construction development platform with AI-powered assistance</li>
+                  <li>Access 3,667+ verified canonical resources</li>
+                  <li>Validate code with compiler integration and formal verification</li>
+                </ul>
                     <div className="product-features-grid">
                       <div className="feature-item">
                         <div className="feature-icon">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                             <path d="M9 12l2 2 4-4"></path>
                           </svg>
@@ -185,7 +187,7 @@ function App() {
                       </div>
                       <div className="feature-item">
                         <div className="feature-icon">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
                             <path d="M8 7h6"></path>
@@ -200,7 +202,7 @@ function App() {
                       </div>
                       <div className="feature-item">
                         <div className="feature-icon">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <circle cx="11" cy="11" r="8"></circle>
                             <path d="m21 21-4.35-4.35"></path>
                           </svg>
@@ -240,7 +242,7 @@ function App() {
                       View on GitHub →
                     </a>
                     <div className="flip-hint" style={{ marginTop: '32px' }}>Click to flip back</div>
-                  </div>
+              </div>
                 </motion.div>
               </motion.div>
             </div>

@@ -98,16 +98,19 @@ main {
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 48px;
+  gap: 40px;
   max-width: 1000px;
   margin: 0 auto;
+  align-items: stretch;
 }
 
 /* Flip Card */
 .flip-card {
   perspective: 1200px;
-  height: 600px;
   cursor: pointer;
+  height: 100%;
+  min-height: 550px;
+  display: block;
 }
 
 .flip-card-inner {
@@ -122,6 +125,8 @@ main {
   position: absolute;
   width: 100%;
   height: 100%;
+  top: 0;
+  left: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
@@ -134,8 +139,8 @@ main {
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 48px;
-  height: 100%;
+  padding: 40px;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
@@ -154,7 +159,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
   color: #374151;
 }
 
@@ -162,15 +167,38 @@ main {
   font-size: 24px;
   font-weight: 700;
   color: #111827;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   letter-spacing: -0.02em;
 }
 
 .product-description {
-  font-size: 16px;
+  font-size: 15px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.product-description-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+}
+
+.product-description-list li {
+  font-size: 15px;
   color: #6b7280;
   line-height: 1.7;
-  margin-bottom: 32px;
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.product-description-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #9ca3af;
+  font-weight: bold;
 }
 
 .product-features {
@@ -211,18 +239,18 @@ main {
 .product-features-grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   margin-top: 0;
   flex: 1;
 }
 
 .feature-item {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: flex-start;
-  padding: 20px;
+  padding: 16px;
   background: #f9fafb;
-  border-radius: 10px;
+  border-radius: 8px;
   transition: all 0.2s;
 }
 
@@ -231,16 +259,16 @@ main {
 }
 
 .feature-icon {
-  width: 40px;
-  height: 40px;
+  width: 28px;
+  height: 28px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #667eea;
   background: #f3f4f6;
-  border-radius: 8px;
-  padding: 8px;
+  border-radius: 6px;
+  padding: 6px;
 }
 
 .feature-item:first-child .feature-icon {
@@ -258,13 +286,14 @@ main {
 .feature-title {
   font-weight: 600;
   color: #111827;
-  font-size: 16px;
-  margin-bottom: 6px;
+  font-size: 15px;
+  margin-bottom: 4px;
+  line-height: 1.4;
 }
 
 .feature-desc {
   color: #6b7280;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.5;
 }
 
@@ -407,6 +436,14 @@ main {
 
   .product-description {
     color: #d1d5db;
+  }
+
+  .product-description-list li {
+    color: #d1d5db;
+  }
+
+  .product-description-list li::before {
+    color: #6b7280;
   }
 
   .product-features li {
