@@ -26,7 +26,7 @@ function App() {
         <ul>
           <li><a href="#home">Home</a></li>
           <li><a href="#products">Products</a></li>
-          <li><a href="#contact">Get Started</a></li>
+          <li><a href="#contact">About</a></li>
         </ul>
       </nav>
 
@@ -126,15 +126,9 @@ function App() {
   uses: ChainSafe/canton-ci/.github/workflows/daml-ci.yaml@main`}</code></pre>
                   </figure>
                   <footer>
-                    <a 
-                      href="https://github.com/ChainSafe/canton-ci" 
-                      role="button"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      View on GitHub →
-                    </a>
+                    <p style={{ fontSize: '0.9rem', color: 'var(--pico-muted-color)', textAlign: 'center', margin: 0 }}>
+                      Click to see features
+                    </p>
                   </footer>
                 </div>
               </motion.div>
@@ -220,15 +214,9 @@ recommend_canonical_resources
 get_canonical_resource_overview</code></pre>
                   </figure>
                   <footer>
-                    <a 
-                      href="https://github.com/ChainSafe/canton-mcp-server" 
-                      role="button"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      View on GitHub →
-                    </a>
+                    <p style={{ fontSize: '0.9rem', color: 'var(--pico-muted-color)', textAlign: 'center', margin: 0 }}>
+                      Click to see features
+                    </p>
                   </footer>
                 </div>
               </motion.div>
@@ -237,7 +225,7 @@ get_canonical_resource_overview</code></pre>
         </section>
 
         <section id="contact">
-          <h2>Get Started</h2>
+          <h2>About</h2>
           <p>
             Cantonware is a joint venture between ChainSafe and Round13, building precision tools 
             for the financial industry. Both tools are production-ready and available now.
@@ -247,14 +235,27 @@ get_canonical_resource_overview</code></pre>
             Round13 provides Web3 infrastructure investment. Together, we're accelerating Canton ecosystem growth 
             through developer tooling and blockchain infrastructure.
           </p>
-          <p>
-            <a href="https://github.com/ChainSafe/canton-ci" role="button" target="_blank" rel="noopener noreferrer">
+          <p style={{ fontSize: '0.9rem', color: 'var(--pico-muted-color)', marginTop: '1.5rem', fontStyle: 'italic' }}>
+            Repositories will be made public soon.
+          </p>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '1rem' }}>
+            <a 
+              href="https://github.com/ChainSafe/canton-ci" 
+              role="button"
+              className="github-link-disabled"
+              onClick={(e) => e.preventDefault()}
+            >
               canton-ci
             </a>
-            <a href="https://github.com/ChainSafe/canton-mcp-server" role="button" target="_blank" rel="noopener noreferrer">
+            <a 
+              href="https://github.com/ChainSafe/canton-mcp-server" 
+              role="button"
+              className="github-link-disabled"
+              onClick={(e) => e.preventDefault()}
+            >
               canton-mcp-server
             </a>
-          </p>
+          </div>
         </section>
       </main>
 

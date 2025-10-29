@@ -286,6 +286,13 @@ footer {
   font-size: 0.9rem;
 }
 
+/* Disabled GitHub Links */
+.github-link-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 /* Grid spacing for cards */
 .grid {
   gap: calc(var(--pico-grid-column-gap) * 2);
