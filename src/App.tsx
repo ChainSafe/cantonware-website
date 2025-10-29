@@ -32,15 +32,16 @@ function App() {
 
       <main>
         <section id="home">
-          <h1>Precision Tools for Financial Infrastructure</h1>
+          <h1>DAML Autopilot</h1>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 400, margin認識: '1rem 0', color: 'var(--pico-muted-color)' }}>Precision Tools for Financial Infrastructure</h2>
           <p>
             Production-ready developer tools and automation for DAML smart contracts and Canton blockchain. 
-            Built by Cantonware, a joint venture between ChainSafe and Round13.
+            Built by Cantonware.
           </p>
         </section>
 
         <section id="products">
-          <h2>Our Products</h2>
+          <h2>Our Product Suite</h2>
           <p>
             Open-source tools designed for DAML and Canton developers. Reduce setup time, automate testing, 
             and build safer smart contracts with verified patterns and compiler-integrated validation.
@@ -227,12 +228,10 @@ get_canonical_resource_overview</code></pre>
         <section id="contact">
           <h2>About</h2>
           <p>
-            Cantonware is a joint venture between ChainSafe and Round13, building precision tools 
-            for the financial industry. Both tools are production-ready and available now.
+            Cantonware builds precision tools for the financial industry. Both tools are production-ready and available now.
           </p>
           <p>
-            ChainSafe brings protocol engineering expertise from Ethereum, Polkadot, and Filecoin. 
-            Round13 provides Web3 infrastructure investment. Together, we're accelerating Canton ecosystem growth 
+            Built by <a href="https://chainsafe.io/" target="_blank" rel="noopener noreferrer">ChainSafe</a>, bringing protocol engineering expertise from Ethereum, Polkadot, and Filecoin to accelerate Canton ecosystem growth 
             through developer tooling and blockchain infrastructure.
           </p>
           <p style={{ fontSize: '0.9rem', color: 'var(--pico-muted-color)', marginTop: '1.5rem', fontStyle: 'italic' }}>

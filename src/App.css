@@ -28,8 +28,12 @@ section#home {
 }
 
 section#home h1 {
+  margin-bottom: calc(var(--pico-spacing) * 0.5);
+  font-size: 3rem;
+}
+
+section#home h2 {
   margin-bottom: calc(var(--pico-spacing) * 1.5);
-  font-size: 2.5rem;
 }
 
 section#home p {
