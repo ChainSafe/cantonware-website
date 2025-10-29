@@ -122,14 +122,14 @@ function App() {
                       <h4 className="tech-title">canton-ci</h4>
                       <div className="tech-subtitle">GitHub Actions for DAML and Canton CI workflows</div>
                     </div>
-                    <div style={{ marginTop: '1.5rem', padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '8px', fontSize: '14px', fontFamily: 'monospace' }}>
-                      <div style={{ marginBottom: '1rem', color: '#6b7280', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Install DAML SDK</div>
+                    <div style={{ marginTop: '32px', padding: '20px', backgroundColor: '#f9fafb', borderRadius: '8px', fontSize: '14px', fontFamily: 'monospace' }}>
+                      <div style={{ marginBottom: '12px', color: '#6b7280', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '600' }}>Install DAML SDK</div>
                       <code style={{ color: '#111827', display: 'block', whiteSpace: 'pre-wrap' }}>{`- uses: ChainSafe/canton-ci/.github/actions/install-daml@main
   with:
     sdk_version: "3.4.0-snapshot.20251013.0"`}</code>
                     </div>
-                    <div style={{ marginTop: '1rem', padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '8px', fontSize: '14px', fontFamily: 'monospace' }}>
-                      <div style={{ marginBottom: '1rem', color: '#6b7280', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Run DAML tests</div>
+                    <div style={{ marginTop: '20px', padding: '20px', backgroundColor: '#f9fafb', borderRadius: '8px', fontSize: '14px', fontFamily: 'monospace' }}>
+                      <div style={{ marginBottom: '12px', color: '#6b7280', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '600' }}>Run DAML tests</div>
                       <code style={{ color: '#111827', display: 'block', whiteSpace: 'pre-wrap' }}>{`daml_ci:
   uses: ChainSafe/canton-ci/.github/workflows/daml-ci.yaml@main`}</code>
                     </div>
@@ -142,12 +142,12 @@ function App() {
                     >
                       View on GitHub →
                     </a>
-                    <div className="flip-hint" style={{ marginTop: '1rem' }}>Click to flip back</div>
-              </div>
+                    <div className="flip-hint" style={{ marginTop: '32px' }}>Click to flip back</div>
+                  </div>
                 </motion.div>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 className="flip-card"
                 onClick={() => toggleCard('mcp')}
                 whileHover={{ scale: 1.02 }}
@@ -218,17 +218,17 @@ function App() {
                       <h4 className="tech-title">canton-mcp-server</h4>
                       <div className="tech-subtitle">MCP server for DAML code validation and authorization pattern recommendations</div>
                     </div>
-                    <div style={{ marginTop: '1.5rem', padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '8px', fontSize: '14px', fontFamily: 'monospace' }}>
-                      <div style={{ marginBottom: '1rem', color: '#6b7280', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Start server</div>
+                    <div style={{ marginTop: '32px', padding: '20px', backgroundColor: '#f9fafb', borderRadius: '8px', fontSize: '14px', fontFamily: 'monospace' }}>
+                      <div style={{ marginBottom: '12px', color: '#6b7280', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '600' }}>Start server</div>
                       <code style={{ color: '#111827', display: 'block', whiteSpace: 'pre-wrap' }}>{`docker-compose up -d
 # Server: http://localhost:7284/mcp`}</code>
                     </div>
-                    <div style={{ marginTop: '1rem', padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '8px', fontSize: '14px', fontFamily: 'monospace' }}>
-                      <div style={{ marginBottom: '1rem', color: '#6b7280', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Available tools</div>
-                      <code style={{ color: '#111827', display: 'block' }}>validate_daml_business_logic</code>
-                      <code style={{ color: '#111827', display: 'block', marginTop: '0.5rem' }}>debug_authorization_failure</code>
-                      <code style={{ color: '#111827', display: 'block', marginTop: '0.5rem' }}>suggest_authorization_pattern</code>
-                      <code style={{ color: '#111827', display: 'block', marginTop: '0.5rem' }}>recommend_canonical_resources</code>
+                    <div style={{ marginTop: '20px', padding: '20px', backgroundColor: '#f9fafb', borderRadius: '8px', fontSize: '14px', fontFamily: 'monospace' }}>
+                      <div style={{ marginBottom: '12px', color: '#6b7280', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '600' }}>Available tools</div>
+                      <code style={{ color: '#111827', display: 'block', lineHeight: '1.8' }}>validate_daml_business_logic</code>
+                      <code style={{ color: '#111827', display: 'block', marginTop: '8px', lineHeight: '1.8' }}>debug_authorization_failure</code>
+                      <code style={{ color: '#111827', display: 'block', marginTop: '8px', lineHeight: '1.8' }}>suggest_authorization_pattern</code>
+                      <code style={{ color: '#111827', display: 'block', marginTop: '8px', lineHeight: '1.8' }}>recommend_canonical_resources</code>
                     </div>
                     <a 
                       href="https://github.com/ChainSafe/canton-mcp-server" 
@@ -239,8 +239,8 @@ function App() {
                     >
                       View on GitHub →
                     </a>
-                    <div className="flip-hint" style={{ marginTop: '1rem' }}>Click to flip back</div>
-              </div>
+                    <div className="flip-hint" style={{ marginTop: '32px' }}>Click to flip back</div>
+                  </div>
                 </motion.div>
               </motion.div>
             </div>

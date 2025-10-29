@@ -98,7 +98,7 @@ main {
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 40px;
+  gap: 48px;
   max-width: 1000px;
   margin: 0 auto;
 }
@@ -134,7 +134,7 @@ main {
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 40px;
+  padding: 48px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -154,7 +154,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   color: #374151;
 }
 
@@ -162,15 +162,15 @@ main {
   font-size: 24px;
   font-weight: 700;
   color: #111827;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   letter-spacing: -0.02em;
 }
 
 .product-description {
   font-size: 16px;
   color: #6b7280;
-  line-height: 1.6;
-  margin-bottom: 24px;
+  line-height: 1.7;
+  margin-bottom: 32px;
 }
 
 .product-features {
@@ -211,18 +211,18 @@ main {
 .product-features-grid {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  gap: 16px;
+  margin-top: 0;
   flex: 1;
 }
 
 .feature-item {
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   align-items: flex-start;
-  padding: 1rem;
+  padding: 20px;
   background: #f9fafb;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: all 0.2s;
 }
 
@@ -231,16 +231,16 @@ main {
 }
 
 .feature-icon {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #667eea;
   background: #f3f4f6;
-  border-radius: 6px;
-  padding: 4px;
+  border-radius: 8px;
+  padding: 8px;
 }
 
 .feature-item:first-child .feature-icon {
@@ -258,18 +258,19 @@ main {
 .feature-title {
   font-weight: 600;
   color: #111827;
-  font-size: 15px;
-  margin-bottom: 4px;
+  font-size: 16px;
+  margin-bottom: 6px;
 }
 
 .feature-desc {
   color: #6b7280;
   font-size: 14px;
+  line-height: 1.5;
 }
 
 .flip-hint {
   margin-top: auto;
-  padding-top: 1.5rem;
+  padding-top: 24px;
   color: #9ca3af;
   font-size: 13px;
   text-align: center;
@@ -278,24 +279,25 @@ main {
 
 /* Tech Side */
 .tech-header {
-  margin-bottom: 1rem;
+  margin-bottom: 32px;
 }
 
 .tech-title {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   color: #111827;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
   font-family: monospace;
 }
 
 .tech-subtitle {
   color: #6b7280;
-  font-size: 14px;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 .tech-link {
-  margin-top: 1.5rem;
+  margin-top: 32px;
   display: inline-block;
 }
 
