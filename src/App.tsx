@@ -19,7 +19,8 @@ function App() {
           <div className="container">
             <h1 className="hero-title">Precision Tools for Financial Infrastructure</h1>
             <p className="hero-subtitle">
-              Developer tools and automation for DAML smart contracts and Canton blockchain development
+              Production-ready developer tools and automation for DAML smart contracts and Canton blockchain. 
+              Built by Cantonware, a joint venture between ChainSafe and Round13.
             </p>
           </div>
         </section>
@@ -38,16 +39,25 @@ function App() {
                 </div>
                 <h3 className="product-title">CI Automation</h3>
                 <p className="product-description">
-                  GitHub Actions for DAML and Canton CI workflows. Simplify installation, testing, and deployment 
-                  of DAML smart contracts and Canton participant nodes.
+                  Production-ready GitHub Actions for DAML and Canton CI workflows. Eliminate manual setup with 
+                  one-line installations. Automate testing with DAML Sandbox and Canton LocalNet participant nodes.
                 </p>
                 <ul className="product-features">
-                  <li>DAML SDK installation workflow</li>
-                  <li>Canton installation automation</li>
-                  <li>DAML Sandbox testing</li>
-                  <li>Canton LocalNet integration</li>
+                  <li>One-line DAML SDK installation</li>
+                  <li>Automated Canton setup</li>
+                  <li>Integrated Sandbox testing workflows</li>
+                  <li>Canton LocalNet script execution</li>
                 </ul>
-                <a href="#ci" className="product-link">Learn More →</a>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                  <a 
+                    href="https://github.com/ChainSafe/canton-ci" 
+                    className="product-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View Repository →
+                  </a>
+                </div>
               </div>
 
               <div className="product-card">
@@ -59,16 +69,25 @@ function App() {
                 </div>
                 <h3 className="product-title">Canton MCP Server</h3>
                 <p className="product-description">
-                  DAML-safe by construction development platform. Generate provably safe DAML code with verified 
-                  patterns, compiler integration, and validation tools.
+                  DAML-safe by construction development platform with AI-powered assistance. Access 3,667+ verified 
+                  canonical resources. Validate code with compiler integration and formal verification.
                 </p>
                 <ul className="product-features">
-                  <li>DAML code validation</li>
-                  <li>Authorization pattern suggestions</li>
-                  <li>Canonical resource library</li>
-                  <li>Compiler-based safety checks</li>
+                  <li>DAML business logic validation</li>
+                  <li>Authorization failure debugging</li>
+                  <li>Intelligent pattern recommendations</li>
+                  <li>Production-ready with Docker support</li>
                 </ul>
-                <a href="#daml" className="product-link">Learn More →</a>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                  <a 
+                    href="https://github.com/ChainSafe/canton-mcp-server" 
+                    className="product-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View Repository →
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -79,16 +98,28 @@ function App() {
             <h2 className="section-title">Get Started</h2>
             <p className="contact-text">
               Cantonware is a joint venture between ChainSafe and Round13, building precision tools 
-              for the financial industry. Explore our open-source tools on GitHub.
+              for the financial industry. Both tools are production-ready and available now.
             </p>
-            <a 
-              href="https://github.com/ChainSafe" 
-              className="contact-button"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View on GitHub
-            </a>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '2rem' }}>
+              <a 
+                href="https://github.com/ChainSafe/canton-ci" 
+                className="contact-button"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ minWidth: '200px' }}
+              >
+                canton-ci Repository
+              </a>
+              <a 
+                href="https://github.com/ChainSafe/canton-mcp-server" 
+                className="contact-button"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ minWidth: '200px' }}
+              >
+                canton-mcp-server Repository
+              </a>
+            </div>
           </div>
         </section>
       </main>
