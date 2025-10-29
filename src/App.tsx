@@ -17,9 +17,9 @@ function App() {
       <main>
         <section id="home" className="hero">
           <div className="container">
-            <h1 className="hero-title">Professional Developer Tools</h1>
+            <h1 className="hero-title">Precision Tools for Financial Infrastructure</h1>
             <p className="hero-subtitle">
-              Streamline your development workflow with our suite of powerful automation tools
+              Developer tools and automation for DAML smart contracts and Canton blockchain development
             </p>
           </div>
         </section>
@@ -38,14 +38,14 @@ function App() {
                 </div>
                 <h3 className="product-title">CI Automation</h3>
                 <p className="product-description">
-                  A GitHub app designed to automate your continuous integration workflows. 
-                  Streamline your build, test, and deployment processes with intelligent automation.
+                  GitHub Actions for DAML and Canton CI workflows. Simplify installation, testing, and deployment 
+                  of DAML smart contracts and Canton participant nodes.
                 </p>
                 <ul className="product-features">
-                  <li>Automated workflow triggers</li>
-                  <li>Smart build optimization</li>
-                  <li>Seamless GitHub integration</li>
-                  <li>Custom pipeline configuration</li>
+                  <li>DAML SDK installation workflow</li>
+                  <li>Canton installation automation</li>
+                  <li>DAML Sandbox testing</li>
+                  <li>Canton LocalNet integration</li>
                 </ul>
                 <a href="#ci" className="product-link">Learn More →</a>
               </div>
@@ -57,16 +57,16 @@ function App() {
                     <polyline points="8 6 2 12 8 18"></polyline>
                   </svg>
                 </div>
-                <h3 className="product-title">DAML MCP Server</h3>
+                <h3 className="product-title">Canton MCP Server</h3>
                 <p className="product-description">
-                  An MCP (Model Context Protocol) server specialized for DAML code generation. 
-                  Accelerate your smart contract development with AI-powered code assistance.
+                  DAML-safe by construction development platform. Generate provably safe DAML code with verified 
+                  patterns, compiler integration, and validation tools.
                 </p>
                 <ul className="product-features">
-                  <li>Intelligent code generation</li>
-                  <li>DAML-specific optimizations</li>
-                  <li>Context-aware suggestions</li>
-                  <li>Standards-compliant output</li>
+                  <li>DAML code validation</li>
+                  <li>Authorization pattern suggestions</li>
+                  <li>Canonical resource library</li>
+                  <li>Compiler-based safety checks</li>
                 </ul>
                 <a href="#daml" className="product-link">Learn More →</a>
               </div>
@@ -78,7 +78,8 @@ function App() {
           <div className="container">
             <h2 className="section-title">Get Started</h2>
             <p className="contact-text">
-              Explore our tools on GitHub and start improving your development workflow today.
+              Cantonware is a joint venture between ChainSafe and Round13, building precision tools 
+              for the financial industry. Explore our open-source tools on GitHub.
             </p>
             <a 
               href="https://github.com/ChainSafe" 

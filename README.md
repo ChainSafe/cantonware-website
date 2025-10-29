@@ -40,6 +40,17 @@ npm run preview
 npm run lint
 ```
 
+## Deployment
+
+The site is automatically deployed to GitHub Pages on every push to the `main` branch via GitHub Actions.
+
+To enable GitHub Pages:
+1. Go to repository Settings → Pages
+2. Under "Source", select "GitHub Actions"
+3. The workflow will automatically build and deploy on pushes to `main`
+
+The site will be available at `https://[username].github.io/[repository-name]/` (or custom domain if configured).
+
 ## Features
 
 - Clean, professional design
