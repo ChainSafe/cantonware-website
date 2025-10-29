@@ -156,10 +156,11 @@ main {
 
 
 .product-icon {
-  width: 64px;
-  height: 64px;
-  background-color: #f3f4f6;
-  border-radius: 12px;
+  width: 56px;
+  height: 56px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,11 +170,11 @@ main {
 }
 
 .product-title {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 600;
   color: #111827;
-  margin-bottom: 12px;
-  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  letter-spacing: -0.015em;
   flex-shrink: 0;
 }
 
@@ -193,19 +194,19 @@ main {
 
 .product-description-list li {
   font-size: 14px;
-  color: #6b7280;
-  line-height: 1.5;
-  margin-bottom: 4px;
-  padding-left: 18px;
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 6px;
+  padding-left: 16px;
   position: relative;
 }
 
 .product-description-list li::before {
-  content: '•';
+  content: '—';
   position: absolute;
   left: 0;
   color: #9ca3af;
-  font-weight: bold;
+  font-weight: normal;
 }
 
 .product-features {
@@ -257,14 +258,16 @@ main {
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  padding: 16px;
-  background: #f9fafb;
-  border-radius: 8px;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
   transition: all 0.2s;
 }
 
 .feature-item:hover {
-  background: #f3f4f6;
+  background: #f9fafb;
+  border-color: #d1d5db;
 }
 
 .feature-icon {
@@ -274,30 +277,20 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #667eea;
-  background: #f3f4f6;
+  color: #6b7280;
+  background: #f9fafb;
   border-radius: 6px;
   padding: 6px;
-}
-
-.feature-item:first-child .feature-icon {
-  color: #f59e0b;
-}
-
-.feature-item:nth-child(2) .feature-icon {
-  color: #10b981;
-}
-
-.feature-item:nth-child(3) .feature-icon {
-  color: #3b82f6;
+  border: 1px solid #e5e7eb;
 }
 
 .feature-title {
-  font-weight: 600;
+  font-weight: 500;
   color: #111827;
-  font-size: 15px;
+  font-size: 14px;
   margin-bottom: 4px;
   line-height: 1.4;
+  letter-spacing: -0.01em;
 }
 
 .feature-desc {
@@ -469,15 +462,24 @@ main {
   }
 
   .feature-item {
-    background: #374151;
-  }
-
-  .feature-icon {
-    background: #4b5563;
+    background: #111827;
+    border-color: #374151;
   }
 
   .feature-item:hover {
-    background: #4b5563;
+    background: #1f2937;
+    border-color: #4b5563;
+  }
+
+  .feature-icon {
+    background: #1f2937;
+    border-color: #374151;
+    color: #d1d5db;
+  }
+
+  .product-icon {
+    background-color: #111827;
+    border-color: #374151;
   }
 
   .feature-title {

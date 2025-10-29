@@ -62,8 +62,8 @@ function App() {
                   transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 15 }}
                 >
                   <div className="flip-card-front product-card">
-                    <div className="product-icon" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                <div className="product-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
                   </svg>
@@ -160,8 +160,8 @@ function App() {
                   transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 15 }}
                 >
                   <div className="flip-card-front product-card">
-                    <div className="product-icon" style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
-                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                <div className="product-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <polyline points="16 18 22 12 16 6"></polyline>
                     <polyline points="8 6 2 12 8 18"></polyline>
                   </svg>
