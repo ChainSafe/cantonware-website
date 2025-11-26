@@ -3,7 +3,6 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 calc(var(--pico-spacing) * 2);
-  overflow-x: hidden;
 }
 
 /* Navigation spacing */
@@ -14,16 +13,56 @@ nav {
 
 nav a {
   font-weight: 400;
+  color: var(--pico-primary);
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  height: 24px;
+}
+
+nav a:hover {
+  opacity: 0.7;
+}
+
+nav button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--pico-primary);
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+}
+
+nav button:hover {
+  opacity: 0.7;
+}
+
+nav button svg {
+  transition: opacity 0.3s ease;
+}
+
+nav ul li {
+  display: flex;
+  align-items: center;
+}
+
+nav svg {
+  display: block;
+  vertical-align: middle;
 }
 
 /* Section spacing */
 section {
-  margin-bottom: calc(var(--pico-spacing) * 4);
-  padding: calc(var(--pico-spacing) * 2) 0;
+  margin-bottom: calc(var(--pico-spacing) * 2);
+  padding: calc(var(--pico-spacing) * 1.5) 0;
 }
 
 section#home {
-  padding: calc(var(--pico-spacing) * 4) 0;
+  padding: calc(var(--pico-spacing) * 3) 0 calc(var(--pico-spacing) * 2) 0;
   text-align: center;
 }
 
@@ -60,13 +99,13 @@ section#products > p {
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: calc(var(--pico-spacing) * 3);
+  margin-bottom: calc(var(--pico-spacing) * 2);
   font-size: 1.0625rem;
 }
 
 section#contact {
   text-align: center;
-  padding: calc(var(--pico-spacing) * 4) 0;
+  padding: calc(var(--pico-spacing) * 2) 0;
 }
 
 section#contact h2 {
@@ -100,6 +139,11 @@ footer {
   cursor: pointer;
   margin: calc(var(--pico-spacing) * 2) 0;
   min-height: 720px;
+  transition: transform 0.3s ease;
+}
+
+.flip-card:hover {
+  transform: translateY(-4px);
 }
 
 .flip-card-inner {
@@ -121,6 +165,13 @@ footer {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   overflow: hidden;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease;
+}
+
+.flip-card:hover .flip-card-front,
+.flip-card:hover .flip-card-back {
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
 }
 
 .flip-card-back {
@@ -137,13 +188,75 @@ footer {
 }
 
 .product-icon {
-  width: 48px;
-  height: 48px;
-  margin-bottom: calc(var(--pico-spacing) * 0.5);
+  width: 72px;
+  height: 72px;
+  margin-bottom: calc(var(--pico-spacing) * 1);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--pico-primary-rgb), 0.15) 0%,
+    rgba(147, 51, 234, 0.08) 100%
+  );
+  border: 1px solid rgba(var(--pico-primary-rgb), 0.2);
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 
+    0 0.25rem 0.5rem rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 1.5rem rgba(var(--pico-primary-rgb), 0.2);
+  transition: all 0.3s ease;
+}
+
+.product-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke: var(--pico-primary);
+  filter: drop-shadow(0 0 0.5rem rgba(var(--pico-primary-rgb), 0.4));
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+@keyframes shimmer {
+  0% {
+    filter: drop-shadow(0 0 0.5rem rgba(59, 130, 246, 0.4));
+  }
+  25% {
+    filter: drop-shadow(0 0 0.8rem rgba(139, 92, 246, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 1rem rgba(168, 85, 247, 0.6));
+  }
+  75% {
+    filter: drop-shadow(0 0 0.8rem rgba(139, 92, 246, 0.5));
+  }
+  100% {
+    filter: drop-shadow(0 0 0.5rem rgba(59, 130, 246, 0.4));
+  }
+}
+
+.product-icon svg {
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.flip-card:hover .product-icon {
+  transform: scale(1.08) translateY(-2px);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--pico-primary-rgb), 0.25) 0%,
+    rgba(147, 51, 234, 0.15) 100%
+  );
+  border-color: rgba(var(--pico-primary-rgb), 0.4);
+  box-shadow: 
+    0 0.5rem 1rem rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 2rem rgba(var(--pico-primary-rgb), 0.4);
+}
+
+.flip-card:hover .product-icon svg {
+  animation: shimmer 1.5s ease-in-out infinite;
 }
 
 .flip-card-front h3 {
@@ -180,9 +293,24 @@ footer {
   gap: calc(var(--pico-spacing) * 0.5);
   align-items: flex-start;
   padding: calc(var(--pico-spacing) * 0.5);
-  border: 1px solid var(--pico-border-color);
+  border: 1px solid rgba(var(--pico-primary-rgb), 0.15);
   border-radius: var(--pico-border-radius);
   flex-shrink: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--pico-primary-rgb), 0.03) 0%,
+    transparent 100%
+  );
+  transition: all 0.2s ease;
+}
+
+.flip-card:hover .feature-grid article {
+  border-color: rgba(var(--pico-primary-rgb), 0.25);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--pico-primary-rgb), 0.06) 0%,
+    rgba(var(--pico-primary-rgb), 0.01) 100%
+  );
 }
 
 .feature-grid article svg {
@@ -277,6 +405,62 @@ footer {
   line-height: 1.5;
 }
 
+.tool-highlight {
+  padding: calc(var(--pico-spacing) * 0.75);
+  border: 1px solid rgba(var(--pico-primary-rgb), 0.3);
+  border-radius: var(--pico-border-radius);
+  margin: calc(var(--pico-spacing) * 0.5) 0;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--pico-primary-rgb), 0.08) 0%,
+    rgba(var(--pico-primary-rgb), 0.02) 100%
+  );
+  box-shadow: 
+    0 0.125rem 0.25rem rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.flip-card:hover .tool-highlight {
+  border-color: rgba(var(--pico-primary-rgb), 0.5);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--pico-primary-rgb), 0.12) 0%,
+    rgba(var(--pico-primary-rgb), 0.04) 100%
+  );
+  box-shadow: 
+    0 0.25rem 0.5rem rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 0 1rem rgba(var(--pico-primary-rgb), 0.15);
+}
+
+.flip-card:hover .tool-highlight figcaption svg {
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.tool-highlight figcaption {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: calc(var(--pico-spacing) * 0.375);
+  color: var(--pico-contrast);
+  text-transform: none;
+  letter-spacing: normal;
+  display: flex;
+  align-items: center;
+}
+
+.tool-highlight figcaption svg {
+  stroke: var(--pico-primary);
+  animation: shimmer 3s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.tool-highlight p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
 .flip-card-back footer {
   margin-top: auto;
   padding-top: calc(var(--pico-spacing) * 1);
@@ -311,6 +495,18 @@ footer {
   flex-direction: column;
   padding: calc(var(--pico-spacing) * 1.5);
   min-height: auto;
+  position: relative;
+  border: 1px solid transparent;
+  background: 
+    linear-gradient(var(--pico-background-color), var(--pico-background-color)) padding-box,
+    linear-gradient(135deg, 
+      rgba(59, 130, 246, 0.3) 0%,
+      rgba(147, 51, 234, 0.3) 50%,
+      rgba(59, 130, 246, 0.3) 100%
+    ) border-box;
+  box-shadow: 
+    0 0 0 1px rgba(59, 130, 246, 0.1),
+    0 0 2rem rgba(59, 130, 246, 0.15);
 }
 
 /* Responsive adjustments */
