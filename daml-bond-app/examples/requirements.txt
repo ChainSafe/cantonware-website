@@ -1,0 +1,4 @@
+# Python dependencies for Fixed Rate Bond client
+dazl>=7.10.0
+asyncio>=3.4.3
+

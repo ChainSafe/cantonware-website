@@ -1,0 +1,217 @@
+module AllowanceSetup where
+
+import Allowance
+import DA.Date
+import DA.List
+import Daml.Script
+
+-- | Data structure to hold all the parties
+data Parties = Parties
+  with
+    parent : Party
+    emma : Party
+    james : Party
+
+-- | Setup script that initializes the allowance system
+setupAllowanceSystem : Script (Parties, [ContractId AllowanceAccount])
+setupAllowanceSystem = do
+  -- Allocate parties
+  parent <- allocateParty "Parent"
+  emma <- allocateParty "Emma"
+  james <- allocateParty "James"
+
+  let parties = Parties with
+        parent
+        emma
+        james
+
+  -- Set up initial date (today)
+  let startDate = date 2025 Nov 27
+
+  -- Create Emma's allowance account
+  -- Starting with $10/week allowance, $20 initial balance
+  emmaAccount <- submit parent do
+    createCmd AllowanceAccount with
+      parent
+      child = emma
+      childName = "Emma"
+      balance = 20.0
+      weeklyAmount = 10.0
+      lastPaymentDate = startDate
+      currency = "USD"
+
+  -- Create James's allowance account
+  -- Starting with $8/week allowance, $15 initial balance
+  jamesAccount <- submit parent do
+    createCmd AllowanceAccount with
+      parent
+      child = james
+      childName = "James"
+      balance = 15.0
+      weeklyAmount = 8.0
+      lastPaymentDate = startDate
+      currency = "USD"
+
+  return (parties, [emmaAccount, jamesAccount])
+
+
+-- | Example: Parent pays weekly allowance
+examplePayWeeklyAllowance : Script ()
+examplePayWeeklyAllowance = do
+  (parties, accounts) <- setupAllowanceSystem
+  
+  let emmaAccountCid = head accounts
+  let nextWeek = date 2025 Dec 4  -- 7 days later
+
+  -- Parent pays Emma's weekly allowance
+  newEmmaAccount <- submit parties.parent do
+    exerciseCmd emmaAccountCid PayWeeklyAllowance with
+      today = nextWeek
+
+  -- Check the new balance
+  (name, balance) <- submit parties.parent do
+    exerciseCmd newEmmaAccount ViewBalance
+
+  debug $ name <> "'s new balance: $" <> show balance
+  return ()
+
+
+-- | Example: Child withdraws money for spending
+exampleChildWithdrawal : Script ()
+exampleChildWithdrawal = do
+  (parties, accounts) <- setupAllowanceSystem
+  
+  let emmaAccountCid = head accounts
+
+  -- Emma withdraws $5 to buy a book
+  newEmmaAccount <- submit parties.emma do
+    exerciseCmd emmaAccountCid WithdrawMoney with
+      amount = 5.0
+      description = "Bought a book"
+
+  -- Check the new balance
+  (name, balance) <- submit parties.parent do
+    exerciseCmd newEmmaAccount ViewBalance
+
+  debug $ name <> " withdrew money. New balance: $" <> show balance
+  return ()
+
+
+-- | Example: Task completion workflow
+exampleTaskCompletion : Script ()
+exampleTaskCompletion = do
+  (parties, accounts) <- setupAllowanceSystem
+  
+  let jamesAccountCid = accounts !! 1
+
+  -- Parent creates a task for James
+  task <- submit parties.parent do
+    createCmd Task with
+      parent = parties.parent
+      child = parties.james
+      childName = "James"
+      description = "Clean the garage"
+      reward = 5.0
+      dueDate = Some (date 2025 Dec 1)
+      currency = "USD"
+
+  -- James completes the task
+  taskCompletion <- submit parties.james do
+    exerciseCmd task CompleteTask with
+      completionDate = date 2025 Nov 30
+
+  -- Parent approves and pays the reward
+  newJamesAccount <- submit parties.parent do
+    exerciseCmd taskCompletion ApproveAndPay with
+      allowanceAccountCid = jamesAccountCid
+
+  -- Check James's new balance
+  (name, balance) <- submit parties.parent do
+    exerciseCmd newJamesAccount ViewBalance
+
+  debug $ name <> " completed task. New balance: $" <> show balance
+  return ()
+
+
+-- | Example: Parent gives bonus payment
+exampleBonusPayment : Script ()
+exampleBonusPayment = do
+  (parties, accounts) <- setupAllowanceSystem
+  
+  let emmaAccountCid = head accounts
+
+  -- Parent gives Emma a birthday bonus
+  newEmmaAccount <- submit parties.parent do
+    exerciseCmd emmaAccountCid MakeBonusPayment with
+      amount = 25.0
+      reason = "Birthday gift"
+
+  -- Check the new balance
+  (name, balance) <- submit parties.parent do
+    exerciseCmd newEmmaAccount ViewBalance
+
+  debug $ name <> " received bonus. New balance: $" <> show balance
+  return ()
+
+
+-- | Complete workflow example
+completeWorkflow : Script ()
+completeWorkflow = do
+  (parties, accounts) <- setupAllowanceSystem
+  
+  let emmaAccountCid = head accounts
+  let jamesAccountCid = accounts !! 1
+
+  -- Week 1: Pay weekly allowances
+  debug "=== Week 1: Paying Weekly Allowances ==="
+  let week1Date = date 2025 Dec 4
+  
+  emmaAccount1 <- submit parties.parent do
+    exerciseCmd emmaAccountCid PayWeeklyAllowance with today = week1Date
+  
+  jamesAccount1 <- submit parties.parent do
+    exerciseCmd jamesAccountCid PayWeeklyAllowance with today = week1Date
+
+  -- Emma withdraws some money
+  debug "=== Emma buys something ==="
+  emmaAccount2 <- submit parties.emma do
+    exerciseCmd emmaAccount1 WithdrawMoney with
+      amount = 15.0
+      description = "New toy"
+
+  -- Parent creates task for James
+  debug "=== Parent creates task for James ==="
+  task <- submit parties.parent do
+    createCmd Task with
+      parent = parties.parent
+      child = parties.james
+      childName = "James"
+      description = "Wash the car"
+      reward = 7.0
+      dueDate = Some (date 2025 Dec 10)
+      currency = "USD"
+
+  -- James completes the task
+  debug "=== James completes task ==="
+  taskCompletion <- submit parties.james do
+    exerciseCmd task CompleteTask with
+      completionDate = date 2025 Dec 8
+
+  -- Parent approves task
+  jamesAccount2 <- submit parties.parent do
+    exerciseCmd taskCompletion ApproveAndPay with
+      allowanceAccountCid = jamesAccount1
+
+  -- Check final balances
+  debug "=== Final Balances ==="
+  (emmaName, emmaBalance) <- submit parties.parent do
+    exerciseCmd emmaAccount2 ViewBalance
+  
+  (jamesName, jamesBalance) <- submit parties.parent do
+    exerciseCmd jamesAccount2 ViewBalance
+
+  debug $ emmaName <> "'s balance: $" <> show emmaBalance
+  debug $ jamesName <> "'s balance: $" <> show jamesBalance
+  
+  return ()
+

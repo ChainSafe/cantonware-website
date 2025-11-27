@@ -1,0 +1,248 @@
+-- Asset Option Setup and Test Scripts
+-- Demonstrates usage scenarios for the AssetOption template
+
+module AssetOptionSetup where
+
+import AssetOption
+import DA.Date
+import Daml.Script
+
+-- | Setup basic option scenario
+setup : Script ()
+setup = do
+  -- Allocate parties
+  issuer <- allocateParty "TechCorp"
+  holder <- allocateParty "Investor"
+  
+  -- Define underlying asset (e.g., company stock)
+  let asset = AssetDetails with
+        assetId = "TECH-001"
+        assetType = "Stock"
+        description = "100 TechCorp shares"
+        quantity = 100.0
+  
+  -- Issuer proposes option
+  proposalCid <- submit issuer do
+    createCmd AssetOptionProposal with
+      issuer
+      holder
+      underlying = asset
+      strikePrice = 50.0    -- $50 per share
+      currency = "USD"
+      expiryDate = date 2026 Dec 31
+      optionType = "Call"
+      premium = 500.0       -- $500 premium
+      issueDate = date 2025 Jan 1
+  
+  -- Holder accepts option
+  optionCid <- submit holder do
+    exerciseCmd proposalCid AcceptOption
+  
+  debug "Asset Option created successfully"
+  return ()
+
+-- | Test option exercise workflow
+testOptionExercise : Script ()
+testOptionExercise = do
+  -- Setup parties
+  issuer <- allocateParty "BondIssuer"
+  holder <- allocateParty "OptionBuyer"
+  
+  -- Define underlying bond asset
+  let bondAsset = AssetDetails with
+        assetId = "BOND-XYZ-2030"
+        assetType = "Bond"
+        description = "$100k 5% Corporate Bond"
+        quantity = 100000.0
+  
+  -- Create option proposal
+  proposalCid <- submit issuer do
+    createCmd AssetOptionProposal with
+      issuer
+      holder
+      underlying = bondAsset
+      strikePrice = 95000.0   -- Buy bond at discount
+      currency = "USD"
+      expiryDate = date 2026 Jun 30
+      optionType = "Call"
+      premium = 5000.0
+      issueDate = date 2025 Nov 27
+  
+  -- Holder accepts
+  optionCid <- submit holder do
+    exerciseCmd proposalCid AcceptOption
+  
+  debug "Option created"
+  
+  -- Holder exercises option before expiry
+  exerciseCid <- submit holder do
+    exerciseCmd optionCid ExerciseOption with
+      currentDate = date 2026 Mar 15
+  
+  debug "Option exercised"
+  
+  -- Issuer settles by providing the asset
+  settlementCid <- submit issuer do
+    exerciseCmd exerciseCid SettleExercise with
+      assetContractId = "BOND-CONTRACT-123"
+  
+  debug "Option settled successfully"
+  return ()
+
+-- | Test option transfer in secondary market
+testOptionTrading : Script ()
+testOptionTrading = do
+  -- Setup parties
+  issuer <- allocateParty "AssetOwner"
+  originalHolder <- allocateParty "FirstBuyer"
+  newBuyer <- allocateParty "SecondBuyer"
+  
+  -- Define underlying token asset
+  let tokenAsset = AssetDetails with
+        assetId = "TOKEN-PREMIUM-001"
+        assetType = "Token"
+        description = "1000 Premium Tokens"
+        quantity = 1000.0
+  
+  -- Create and accept initial option
+  proposalCid <- submit issuer do
+    createCmd AssetOptionProposal with
+      issuer
+      holder = originalHolder
+      underlying = tokenAsset
+      strikePrice = 10000.0
+      currency = "USD"
+      expiryDate = date 2027 Jan 1
+      optionType = "Call"
+      premium = 1000.0
+      issueDate = date 2025 Nov 27
+  
+  optionCid <- submit originalHolder do
+    exerciseCmd proposalCid AcceptOption
+  
+  debug "Initial option created"
+  
+  -- Create trade offer from first buyer to second buyer
+  let optionData = OptionData with
+        issuer
+        underlying = tokenAsset
+        strikePrice = 10000.0
+        expiryDate = date 2027 Jan 1
+        optionType = "Call"
+  
+  tradeOfferCid <- submit originalHolder do
+    createCmd OptionTradeOffer with
+      optionData
+      seller = originalHolder
+      buyer = newBuyer
+      offerPrice = 1500.0   -- Selling at premium
+      currency = "USD"
+      optionCid
+  
+  debug "Trade offer created"
+  
+  -- Second buyer accepts trade
+  acceptanceCid <- submit newBuyer do
+    exerciseCmd tradeOfferCid AcceptOptionTrade
+  
+  debug "Buyer accepted trade"
+  
+  -- Seller completes the transfer
+  newOptionCid <- submit originalHolder do
+    exerciseCmd acceptanceCid CompleteTrade
+  
+  debug "Option successfully traded to new buyer"
+  return ()
+
+-- | Test option expiry scenario (should fail)
+testOptionExpiry : Script ()
+testOptionExpiry = do
+  issuer <- allocateParty "Issuer"
+  holder <- allocateParty "Holder"
+  
+  let asset = AssetDetails with
+        assetId = "ASSET-001"
+        assetType = "Stock"
+        description = "50 shares"
+        quantity = 50.0
+  
+  -- Create option
+  proposalCid <- submit issuer do
+    createCmd AssetOptionProposal with
+      issuer
+      holder
+      underlying = asset
+      strikePrice = 100.0
+      currency = "USD"
+      expiryDate = date 2025 Dec 31
+      optionType = "Call"
+      premium = 500.0
+      issueDate = date 2025 Jan 1
+  
+  optionCid <- submit holder do
+    exerciseCmd proposalCid AcceptOption
+  
+  debug "Option created"
+  
+  -- Try to exercise after expiry (should fail)
+  exerciseCidOrError <- submitMustFail holder do
+    exerciseCmd optionCid ExerciseOption with
+      currentDate = date 2026 Jan 15  -- After expiry
+  
+  debug "Option exercise correctly failed due to expiry"
+  return ()
+
+-- | Test multi-asset option portfolio
+testOptionPortfolio : Script ()
+testOptionPortfolio = do
+  issuer1 <- allocateParty "TechCorp"
+  issuer2 <- allocateParty "FinanceCorp"
+  investor <- allocateParty "HedgeFund"
+  
+  -- First option: Tech company stocks
+  let techAsset = AssetDetails with
+        assetId = "TECH-STOCK-001"
+        assetType = "Stock"
+        description = "200 Tech shares"
+        quantity = 200.0
+  
+  proposal1 <- submit issuer1 do
+    createCmd AssetOptionProposal with
+      issuer = issuer1
+      holder = investor
+      underlying = techAsset
+      strikePrice = 10000.0
+      currency = "USD"
+      expiryDate = date 2026 Dec 31
+      optionType = "Call"
+      premium = 1000.0
+      issueDate = date 2025 Nov 27
+  
+  option1 <- submit investor do
+    exerciseCmd proposal1 AcceptOption
+  
+  -- Second option: Corporate bond
+  let bondAsset = AssetDetails with
+        assetId = "CORP-BOND-001"
+        assetType = "Bond"
+        description = "$50k Corporate Bond"
+        quantity = 50000.0
+  
+  proposal2 <- submit issuer2 do
+    createCmd AssetOptionProposal with
+      issuer = issuer2
+      holder = investor
+      underlying = bondAsset
+      strikePrice = 48000.0
+      currency = "USD"
+      expiryDate = date 2027 Jun 30
+      optionType = "Call"
+      premium = 2000.0
+      issueDate = date 2025 Nov 27
+  
+  option2 <- submit investor do
+    exerciseCmd proposal2 AcceptOption
+  
+  debug "Portfolio of 2 options created successfully"
+  return ()
+

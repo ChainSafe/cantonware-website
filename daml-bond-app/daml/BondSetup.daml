@@ -1,0 +1,107 @@
+-- Bond Setup and Test Scenarios
+-- This module provides setup scripts and example workflows for the bond application
+
+module BondSetup where
+
+import FixedRateBond
+import DA.Date
+import Daml.Script
+
+-- | Setup script to initialize parties and create a sample bond
+setup : Script ()
+setup = do
+  -- Allocate parties
+  issuer <- allocateParty "Issuer"
+  investor1 <- allocateParty "Investor1"
+  investor2 <- allocateParty "Investor2"
+
+  -- Create bond issuance request
+  let bondDetails = BondIssuanceRequest with
+        issuer
+        investor = investor1
+        isin = "US1234567890"
+        currency = "USD"
+        denomination = 100000.0
+        issueDate = date 2025 Jan 1
+        maturityDate = date 2030 Jan 1
+        couponRate = 0.05  -- 5% annual rate
+        couponFrequency = 2  -- Semi-annual payments
+
+  -- Issuer creates the bond issuance request
+  requestCid <- submit issuer do
+    createCmd bondDetails
+
+  -- Investor accepts the issuance
+  bondCid <- submit investor1 do
+    exerciseCmd requestCid AcceptIssuance
+
+  debug "Bond successfully issued!"
+  return ()
+
+-- | Test scenario: Full bond lifecycle
+testBondLifecycle : Script ()
+testBondLifecycle = do
+  -- Setup parties
+  issuer <- allocateParty "Issuer"
+  investor1 <- allocateParty "Investor1"
+  investor2 <- allocateParty "Investor2"
+
+  -- Issue bond
+  requestCid <- submit issuer do
+    createCmd BondIssuanceRequest with
+      issuer
+      investor = investor1
+      isin = "US9876543210"
+      currency = "USD"
+      denomination = 50000.0
+      issueDate = date 2025 Jan 1
+      maturityDate = date 2027 Jan 1
+      couponRate = 0.04
+      couponFrequency = 2
+
+  bondCid <- submit investor1 do
+    exerciseCmd requestCid AcceptIssuance
+
+  debug "Step 1: Bond issued to Investor1"
+
+  -- Pay first coupon
+  (bondCid2, couponCid1) <- submit issuer do
+    exerciseCmd bondCid PayCoupon
+
+  debug "Step 2: First coupon paid"
+
+  -- Investor2 creates trade offer to buy from Investor1
+  tradeOfferCid <- submit investor2 do
+    createCmd BondTradeOffer with
+      bondData = BondData with
+        issuer
+        isin = "US9876543210"
+        denomination = 50000.0
+        maturityDate = date 2027 Jan 1
+      seller = investor1
+      buyer = investor2
+      price = 51000.0
+      currency = "USD"
+
+  debug "Step 3: Trade offer created by buyer"
+
+  -- Investor1 (seller) accepts trade and transfers bond
+  bondCid3 <- submit investor1 do
+    exerciseCmd tradeOfferCid (AcceptTradeOffer bondCid2)
+
+  debug "Step 4: Bond transferred to Investor2"
+
+  -- Pay second coupon (now to Investor2)
+  (bondCid4, couponCid2) <- submit issuer do
+    exerciseCmd bondCid3 PayCoupon
+
+  debug "Step 5: Second coupon paid to new investor"
+
+  return ()
+
+-- | Query all active bonds
+queryActiveBonds : Party -> Script [ContractId Bond]
+queryActiveBonds party = do
+  query @Bond party
+  return []
+

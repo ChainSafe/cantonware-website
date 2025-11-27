@@ -1,0 +1,20 @@
+{
+  "name": "fixed-rate-bond-client",
+  "version": "1.0.0",
+  "description": "TypeScript client for Fixed Rate Bond application",
+  "main": "typescript-client.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node typescript-client.ts"
+  },
+  "dependencies": {
+    "@daml/ledger": "^2.8.0",
+    "@daml/types": "^2.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0"
+  }
+}
+

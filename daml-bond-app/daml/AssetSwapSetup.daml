@@ -1,0 +1,275 @@
+-- Asset Swap Setup and Test Scenarios
+-- Test scripts demonstrating various swap use cases
+
+module AssetSwapSetup where
+
+import AssetSwap
+import DA.Optional
+import Daml.Script
+
+-- | Test 1: Simple two-party bond swap
+testBondSwap : Script ()
+testBondSwap = do
+  -- Allocate parties
+  alice <- allocateParty "Alice"
+  bob <- allocateParty "Bob"
+  
+  -- Define assets for swap
+  let aliceBond = AssetDescription with
+        contractId = "BOND-001-CID"
+        assetType = "Bond"
+        description = "4% Bond maturing 2028, $50k"
+        quantity = Some 50000.0
+  
+  let bobBond = AssetDescription with
+        contractId = "BOND-002-CID"
+        assetType = "Bond"
+        description = "5% Bond maturing 2030, $60k"
+        quantity = Some 60000.0
+  
+  -- Alice proposes swap
+  proposalCid <- submit alice do
+    createCmd SwapProposal with
+      proposer = alice
+      counterparty = bob
+      proposerAssets = [aliceBond]
+      counterpartyAssets = [bobBond]
+      swapId = "SWAP-BOND-001"
+      description = "Bond portfolio rebalancing"
+      expirationDate = None
+  
+  debug "Step 1: Swap proposal created"
+  
+  -- Bob accepts
+  agreementCid <- submit bob do
+    exerciseCmd proposalCid AcceptSwap
+  
+  debug "Step 2: Swap agreement signed"
+  
+  -- Complete the swap
+  completionCid <- submit alice do
+    exerciseCmd agreementCid CompleteSwap with
+      completedBy = alice
+  
+  debug "Step 3: Bond swap completed successfully"
+  return ()
+
+-- | Test 2: Multi-asset swap (2-for-1)
+testMultiAssetSwap : Script ()
+testMultiAssetSwap = do
+  trader1 <- allocateParty "Trader1"
+  trader2 <- allocateParty "Trader2"
+  
+  -- Trader 1 offers 2 bonds
+  let bond1 = AssetDescription with
+        contractId = "BOND-USD-001"
+        assetType = "Bond"
+        description = "3% USD Bond $25k"
+        quantity = Some 25000.0
+  
+  let bond2 = AssetDescription with
+        contractId = "BOND-EUR-001"
+        assetType = "Bond"
+        description = "3.5% EUR Bond €30k"
+        quantity = Some 30000.0
+  
+  -- Trader 2 offers 1 larger bond
+  let largeBond = AssetDescription with
+        contractId = "BOND-USD-002"
+        assetType = "Bond"
+        description = "6% USD Bond $75k"
+        quantity = Some 75000.0
+  
+  -- Create swap proposal
+  proposalCid <- submit trader1 do
+    createCmd SwapProposal with
+      proposer = trader1
+      counterparty = trader2
+      proposerAssets = [bond1, bond2]
+      counterpartyAssets = [largeBond]
+      swapId = "SWAP-MULTI-001"
+      description = "2-for-1 bond swap"
+      expirationDate = None
+  
+  debug "Multi-asset proposal created"
+  
+  -- Accept and complete
+  agreementCid <- submit trader2 do
+    exerciseCmd proposalCid AcceptSwap
+  
+  completionCid <- submit trader1 do
+    exerciseCmd agreementCid CompleteSwap with
+      completedBy = trader1
+  
+  debug "Multi-asset swap completed"
+  return ()
+
+-- | Test 3: Three-party circular swap
+testMultiPartySwap : Script ()
+testMultiPartySwap = do
+  alice <- allocateParty "Alice"
+  bob <- allocateParty "Bob"
+  charlie <- allocateParty "Charlie"
+  
+  -- Define assets for each party
+  let aliceNFT = AssetDescription with
+        contractId = "NFT-ART-001"
+        assetType = "NFT"
+        description = "Rare Digital Art NFT"
+        quantity = Some 1.0
+  
+  let bobTokens = AssetDescription with
+        contractId = "TOKEN-PREMIUM-001"
+        assetType = "Token"
+        description = "500 Premium Tokens"
+        quantity = Some 500.0
+  
+  let charlieBond = AssetDescription with
+        contractId = "BOND-CORP-001"
+        assetType = "Bond"
+        description = "Corporate Bond $100k"
+        quantity = Some 100000.0
+  
+  -- Create multi-party swap
+  let assets = 
+        [ (alice, [aliceNFT])
+        , (bob, [bobTokens])
+        , (charlie, [charlieBond])
+        ]
+  
+  proposalCid <- submit alice do
+    createCmd MultiPartySwapProposal with
+      initiator = alice
+      participants = [bob, charlie]
+      swapId = "SWAP-3WAY-001"
+      description = "Three-way asset exchange"
+      assets
+  
+  debug "Multi-party swap proposed"
+  
+  -- Bob accepts
+  agreementCid <- submit bob do
+    exerciseCmd proposalCid AcceptMultiPartySwap with
+      acceptingParty = bob
+  
+  debug "Multi-party swap accepted"
+  
+  -- Complete the swap
+  submit alice do
+    exerciseCmd agreementCid CompleteMultiPartySwap with
+      completingParty = alice
+  
+  debug "Three-party swap completed"
+  return ()
+
+-- | Test 4: Swap modification and cancellation
+testSwapModification : Script ()
+testSwapModification = do
+  alice <- allocateParty "Alice"
+  bob <- allocateParty "Bob"
+  
+  let asset1 = AssetDescription with
+        contractId = "ASSET-001"
+        assetType = "Token"
+        description = "100 tokens"
+        quantity = Some 100.0
+  
+  let asset2 = AssetDescription with
+        contractId = "ASSET-002"
+        assetType = "Bond"
+        description = "$10k bond"
+        quantity = Some 10000.0
+  
+  -- Create initial proposal
+  proposalCid <- submit alice do
+    createCmd SwapProposal with
+      proposer = alice
+      counterparty = bob
+      proposerAssets = [asset1]
+      counterpartyAssets = [asset2]
+      swapId = "SWAP-MOD-001"
+      description = "Initial proposal"
+      expirationDate = None
+  
+  debug "Initial proposal created"
+  
+  -- Alice updates the proposal
+  let updatedAsset1 = AssetDescription with
+        contractId = "ASSET-001"
+        assetType = "Token"
+        description = "150 tokens (increased)"
+        quantity = Some 150.0
+  
+  proposalCid2 <- submit alice do
+    exerciseCmd proposalCid UpdateSwap with
+      newProposerAssets = [updatedAsset1]
+      newCounterpartyAssets = [asset2]
+      newDescription = "Updated proposal with more tokens"
+  
+  debug "Proposal updated"
+  
+  -- Alice decides to cancel
+  submit alice do
+    exerciseCmd proposalCid2 CancelSwap
+  
+  debug "Proposal cancelled successfully"
+  return ()
+
+-- | Test 5: Dispute resolution workflow
+testSwapDispute : Script ()
+testSwapDispute = do
+  alice <- allocateParty "Alice"
+  bob <- allocateParty "Bob"
+  
+  let asset1 = AssetDescription with
+        contractId = "DISPUTED-001"
+        assetType = "NFT"
+        description = "Disputed NFT"
+        quantity = Some 1.0
+  
+  let asset2 = AssetDescription with
+        contractId = "DISPUTED-002"
+        assetType = "Token"
+        description = "Token payment"
+        quantity = Some 1000.0
+  
+  -- Create and accept swap
+  proposalCid <- submit alice do
+    createCmd SwapProposal with
+      proposer = alice
+      counterparty = bob
+      proposerAssets = [asset1]
+      counterpartyAssets = [asset2]
+      swapId = "SWAP-DISPUTE-001"
+      description = "Swap with potential dispute"
+      expirationDate = None
+  
+  agreementCid <- submit bob do
+    exerciseCmd proposalCid AcceptSwap
+  
+  debug "Swap agreement created"
+  
+  -- Alice initiates a dispute
+  disputeCid <- submit alice do
+    exerciseCmd agreementCid InitiateDispute with
+      disputingParty = alice
+      reason = "Asset not as described"
+  
+  debug "Dispute initiated"
+  
+  -- Bob provides evidence
+  disputeCid2 <- submit bob do
+    exerciseCmd disputeCid ProvideEvidence with
+      providingParty = bob
+      evidence = "Asset matches description, proof attached"
+  
+  debug "Evidence provided"
+  
+  -- Resolve dispute mutually (requires both parties)
+  submitMulti [alice, bob] [] do
+    exerciseCmd disputeCid2 ResolveDispute with
+      resolution = "Agreed to complete swap as originally planned"
+  
+  debug "Dispute resolved successfully"
+  return ()
+

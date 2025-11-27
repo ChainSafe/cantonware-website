@@ -1,0 +1,193 @@
+-- Fixed Rate Bond Application
+-- This module defines a comprehensive fixed rate bond with issuance, trading, and coupon payment lifecycle
+
+module FixedRateBond where
+
+import DA.Date
+
+-- | Represents a fixed rate bond with all its characteristics
+template Bond
+  with
+    issuer : Party          -- The bond issuer (e.g., corporation or government)
+    investor : Party        -- Current bond holder
+    isin : Text            -- International Securities Identification Number
+    currency : Text        -- Currency of the bond (e.g., "USD", "EUR")
+    denomination : Decimal -- Face value of the bond
+    issueDate : Date       -- Date when bond was issued
+    maturityDate : Date    -- Date when bond matures
+    couponRate : Decimal   -- Annual coupon rate (e.g., 0.05 for 5%)
+    couponFrequency : Int  -- Number of coupon payments per year (e.g., 2 for semi-annual)
+    nextCouponDate : Date  -- Next scheduled coupon payment date
+    outstandingPrincipal : Decimal -- Remaining principal amount
+  where
+    signatory issuer
+    observer investor
+
+    -- Ensure bond data integrity
+    ensure denomination > 0.0 
+      && couponRate >= 0.0 
+      && couponRate <= 1.0
+      && couponFrequency > 0
+      && outstandingPrincipal > 0.0
+      && maturityDate > issueDate
+      && nextCouponDate <= maturityDate
+
+    -- | Transfer bond to a new investor
+    choice TransferBond : ContractId Bond
+      with
+        newInvestor : Party
+      controller investor
+      do
+        create this with investor = newInvestor
+
+    -- | Pay coupon to the current investor
+    choice PayCoupon : (ContractId Bond, ContractId CouponPayment)
+      controller issuer
+      do
+        let couponAmount = (denomination * couponRate) / (intToDecimal couponFrequency)
+        
+        -- Calculate next coupon date
+        let daysToAdd = 365 / couponFrequency
+        let newNextCouponDate = addDays nextCouponDate daysToAdd
+
+        -- Create coupon payment record
+        paymentCid <- create CouponPayment with
+          bond = isin
+          issuer
+          investor
+          amount = couponAmount
+          currency
+          paymentDate = nextCouponDate
+          
+        -- Update bond with new next coupon date
+        bondCid <- create this with
+          nextCouponDate = newNextCouponDate
+          
+        return (bondCid, paymentCid)
+
+    -- | Redeem bond at maturity
+    choice RedeemBond : ContractId BondRedemption
+      controller issuer
+      do
+        -- Can only redeem at or after maturity
+        assertMsg "Bond can only be redeemed at or after maturity" 
+          (nextCouponDate >= maturityDate)
+        
+        create BondRedemption with
+          bond = isin
+          issuer
+          investor
+          amount = outstandingPrincipal
+          currency
+          redemptionDate = maturityDate
+
+-- | Represents a coupon payment made to bond holder
+template CouponPayment
+  with
+    bond : Text
+    issuer : Party
+    investor : Party
+    amount : Decimal
+    currency : Text
+    paymentDate : Date
+  where
+    signatory issuer
+    observer investor
+
+    ensure amount > 0.0
+
+-- | Represents bond redemption at maturity
+template BondRedemption
+  with
+    bond : Text
+    issuer : Party
+    investor : Party
+    amount : Decimal
+    currency : Text
+    redemptionDate : Date
+  where
+    signatory issuer
+    observer investor
+
+    ensure amount > 0.0
+
+-- | Bond issuance request that requires investor acceptance
+template BondIssuanceRequest
+  with
+    issuer : Party
+    investor : Party
+    isin : Text
+    currency : Text
+    denomination : Decimal
+    issueDate : Date
+    maturityDate : Date
+    couponRate : Decimal
+    couponFrequency : Int
+  where
+    signatory issuer
+    observer investor
+
+    -- | Investor accepts the bond issuance
+    choice AcceptIssuance : ContractId Bond
+      controller investor
+      do
+        -- Calculate first coupon date
+        let daysToFirstCoupon = 365 / couponFrequency
+        let firstCouponDate = addDays issueDate daysToFirstCoupon
+        
+        create Bond with
+          issuer
+          investor
+          isin
+          currency
+          denomination
+          issueDate
+          maturityDate
+          couponRate
+          couponFrequency
+          nextCouponDate = firstCouponDate
+          outstandingPrincipal = denomination
+
+    -- | Investor rejects the bond issuance
+    choice RejectIssuance : ()
+      controller investor
+      do
+        return ()
+
+-- | Bond trading offer - buyer proposes to buy
+template BondTradeOffer
+  with
+    bondData : BondData  -- Bond information for reference
+    seller : Party
+    buyer : Party
+    price : Decimal
+    currency : Text
+  where
+    signatory buyer
+    observer seller
+
+    ensure price > 0.0
+
+    -- | Seller accepts the trade and transfers the bond
+    choice AcceptTradeOffer : ContractId Bond
+      with
+        bondCid : ContractId Bond
+      controller seller
+      do
+        -- Seller exercises transfer on their bond
+        exercise bondCid TransferBond with newInvestor = buyer
+
+    -- | Buyer cancels the trade offer
+    choice CancelTradeOffer : ()
+      controller buyer
+      do
+        return ()
+
+-- | Helper data structure for bond information
+data BondData = BondData with
+    issuer : Party
+    isin : Text
+    denomination : Decimal
+    maturityDate : Date
+  deriving (Eq, Show)
+

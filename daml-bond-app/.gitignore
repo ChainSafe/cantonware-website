@@ -1,0 +1,19 @@
+# DAML build artifacts
+.daml/
+*.dar
+*.hi
+*.hie
+*.dalf
+.build-info
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+

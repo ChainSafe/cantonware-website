@@ -1,0 +1,19 @@
+{
+  "name": "allowance-app-examples",
+  "version": "1.0.0",
+  "description": "Example clients for the Kids Allowance App",
+  "main": "typescript-client.ts",
+  "scripts": {
+    "start": "ts-node typescript-client.ts"
+  },
+  "dependencies": {
+    "@daml/ledger": "^2.0.0",
+    "@daml/types": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.0.0"
+  }
+}
+

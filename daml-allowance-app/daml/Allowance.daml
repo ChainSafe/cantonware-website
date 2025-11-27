@@ -1,0 +1,169 @@
+module Allowance where
+
+import DA.Date
+
+-- | Represents a child's allowance account
+-- This is the core contract that tracks a child's balance and allowance terms
+template AllowanceAccount
+  with
+    parent : Party        -- The parent who funds the account
+    child : Party         -- The child who owns the allowance
+    childName : Text      -- Human-readable name (Emma or James)
+    balance : Decimal     -- Current balance in account
+    weeklyAmount : Decimal -- Amount given each week
+    lastPaymentDate : Date -- When was the last allowance paid
+    currency : Text       -- Currency (e.g., "USD", "EUR")
+  where
+    signatory parent
+    observer child
+
+    -- Ensure valid amounts
+    ensure balance >= 0.0 && weeklyAmount > 0.0
+
+    -- | Parent pays the weekly allowance
+    choice PayWeeklyAllowance : ContractId AllowanceAccount
+      with
+        today : Date
+      controller parent
+      do
+        -- Check if a week has passed since last payment
+        let daysSincePayment = subDate today lastPaymentDate
+        assertMsg "Must wait at least 7 days between allowance payments" (daysSincePayment >= 7)
+        
+        -- Create new account with updated balance
+        create this with
+          balance = balance + weeklyAmount
+          lastPaymentDate = today
+
+    -- | Parent makes a one-time bonus payment (for extra chores, birthdays, etc.)
+    choice MakeBonusPayment : ContractId AllowanceAccount
+      with
+        amount : Decimal
+        reason : Text
+      controller parent
+      do
+        assertMsg "Bonus amount must be positive" (amount > 0.0)
+        
+        create this with
+          balance = balance + amount
+
+    -- | Child withdraws money (spending it)
+    choice WithdrawMoney : ContractId AllowanceAccount
+      with
+        amount : Decimal
+        description : Text  -- What they're spending it on
+      controller child
+      do
+        assertMsg "Withdrawal amount must be positive" (amount > 0.0)
+        assertMsg "Insufficient balance" (balance >= amount)
+        
+        create this with
+          balance = balance - amount
+
+    -- | Parent adjusts the weekly allowance amount
+    choice AdjustWeeklyAmount : ContractId AllowanceAccount
+      with
+        newAmount : Decimal
+      controller parent
+      do
+        assertMsg "Weekly amount must be positive" (newAmount > 0.0)
+        
+        create this with
+          weeklyAmount = newAmount
+
+    -- | Parent can add funds without it being a weekly allowance
+    choice AddFunds : ContractId AllowanceAccount
+      with
+        amount : Decimal
+      controller parent
+      do
+        assertMsg "Amount must be positive" (amount > 0.0)
+        
+        create this with
+          balance = balance + amount
+
+    -- | Parent views current balance (returns the account unchanged)
+    nonconsuming choice ViewBalance : (Text, Decimal)
+      controller parent
+      do
+        return (childName, balance)
+
+
+-- | Task contract - represents a chore or task that can be completed for extra money
+template Task
+  with
+    parent : Party
+    child : Party
+    childName : Text
+    description : Text
+    reward : Decimal
+    dueDate : Optional Date
+    currency : Text
+  where
+    signatory parent
+    observer child
+
+    ensure reward > 0.0
+
+    -- | Child marks task as complete
+    choice CompleteTask : ContractId TaskCompletion
+      with
+        completionDate : Date
+      controller child
+      do
+        create TaskCompletion with
+          parent
+          child
+          childName
+          description
+          reward
+          completionDate
+          approved = False
+          currency
+
+    -- | Parent cancels the task (no longer needed)
+    choice CancelTask : ()
+      controller parent
+      do
+        return ()
+
+
+-- | Represents a completed task awaiting parent approval
+template TaskCompletion
+  with
+    parent : Party
+    child : Party
+    childName : Text
+    description : Text
+    reward : Decimal
+    completionDate : Date
+    approved : Bool
+    currency : Text
+  where
+    signatory child
+    observer parent
+
+    -- | Parent approves and pays reward
+    choice ApproveAndPay : ContractId AllowanceAccount
+      with
+        allowanceAccountCid : ContractId AllowanceAccount
+      controller parent
+      do
+        -- Archive this completion record
+        -- Add reward to the child's allowance account
+        allowanceAccount <- fetch allowanceAccountCid
+        
+        assertMsg "Task is for a different child" (allowanceAccount.child == child)
+        
+        exercise allowanceAccountCid MakeBonusPayment with
+          amount = reward
+          reason = "Task completed: " <> description
+
+    -- | Parent rejects the task completion
+    choice RejectCompletion : ()
+      with
+        reason : Text
+      controller parent
+      do
+        return ()
+

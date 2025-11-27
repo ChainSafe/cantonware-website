@@ -1,0 +1,217 @@
+-- Asset Option Application
+-- Allows the option holder to buy assets at a predetermined strike price before expiry
+-- Similar to a call option in traditional finance
+
+module AssetOption where
+
+import DA.Date
+
+-- | Represents the underlying asset details
+data AssetDetails = AssetDetails with
+    assetId : Text          -- Identifier for the underlying asset
+    assetType : Text        -- Type of asset (e.g., "Bond", "Token", "Stock")
+    description : Text      -- Human-readable description
+    quantity : Decimal      -- Quantity of the asset
+  deriving (Eq, Show)
+
+-- | Asset Option contract - grants right to buy at strike price
+template AssetOption
+  with
+    issuer : Party          -- Party who wrote/sold the option
+    holder : Party          -- Option holder (buyer) who has the right to exercise
+    underlying : AssetDetails  -- Details of the underlying asset
+    strikePrice : Decimal   -- Price at which the holder can buy the asset
+    currency : Text         -- Currency for the strike price
+    expiryDate : Date       -- Last date the option can be exercised
+    optionType : Text       -- "Call" for buying, "Put" for selling
+    premium : Decimal       -- Premium paid for the option
+    issueDate : Date        -- When the option was issued
+  where
+    signatory issuer, holder
+    
+    ensure strikePrice > 0.0
+      && premium >= 0.0
+      && quantity underlying > 0.0
+      && expiryDate > issueDate
+      && (optionType == "Call" || optionType == "Put")
+    
+    -- | Exercise the option before expiry
+    choice ExerciseOption : ContractId OptionExercise
+      with
+        currentDate : Date
+      controller holder
+      do
+        -- Verify option hasn't expired
+        assertMsg "Option has expired" (currentDate <= expiryDate)
+        
+        create OptionExercise with
+          issuer
+          holder
+          underlying
+          strikePrice
+          currency
+          exerciseDate = currentDate
+          optionType
+    
+    -- | Transfer option to another party
+    choice TransferOption : ContractId AssetOption
+      with
+        newHolder : Party
+      controller holder
+      do
+        create this with holder = newHolder
+    
+    -- | Cancel/close option before expiry (requires both parties)
+    choice CancelOption : ()
+      controller issuer, holder
+      do
+        return ()
+
+-- | Represents an exercised option
+template OptionExercise
+  with
+    issuer : Party
+    holder : Party
+    underlying : AssetDetails
+    strikePrice : Decimal
+    currency : Text
+    exerciseDate : Date
+    optionType : Text
+  where
+    signatory issuer, holder
+    
+    ensure strikePrice > 0.0
+    
+    -- | Settle the exercised option by completing the asset transfer
+    choice SettleExercise : ContractId OptionSettlement
+      with
+        assetContractId : Text  -- Reference to the actual asset contract
+      controller issuer
+      do
+        create OptionSettlement with
+          issuer
+          holder
+          underlying
+          strikePrice
+          currency
+          exerciseDate
+          assetContractId
+          settlementDate = exerciseDate
+
+-- | Represents final settlement of an exercised option
+template OptionSettlement
+  with
+    issuer : Party
+    holder : Party
+    underlying : AssetDetails
+    strikePrice : Decimal
+    currency : Text
+    exerciseDate : Date
+    assetContractId : Text
+    settlementDate : Date
+  where
+    signatory issuer, holder
+    
+    ensure strikePrice > 0.0
+
+-- | Option creation proposal from issuer
+template AssetOptionProposal
+  with
+    issuer : Party
+    holder : Party
+    underlying : AssetDetails
+    strikePrice : Decimal
+    currency : Text
+    expiryDate : Date
+    optionType : Text
+    premium : Decimal
+    issueDate : Date
+  where
+    signatory issuer
+    observer holder
+    
+    -- | Holder accepts and pays premium to activate option
+    choice AcceptOption : ContractId AssetOption
+      controller holder
+      do
+        create AssetOption with
+          issuer
+          holder
+          underlying
+          strikePrice
+          currency
+          expiryDate
+          optionType
+          premium
+          issueDate
+    
+    -- | Holder rejects the option proposal
+    choice RejectOption : ()
+      controller holder
+      do
+        return ()
+    
+    -- | Issuer withdraws the option proposal
+    choice WithdrawProposal : ()
+      controller issuer
+      do
+        return ()
+
+-- | Secondary market offer to sell an option
+template OptionTradeOffer
+  with
+    optionData : OptionData
+    seller : Party
+    buyer : Party
+    offerPrice : Decimal
+    currency : Text
+    optionCid : ContractId AssetOption  -- Include the contract ID in the template
+  where
+    signatory seller
+    observer buyer
+    
+    ensure offerPrice > 0.0
+    
+    -- | Buyer accepts the offer, creating acceptance that seller can complete
+    choice AcceptOptionTrade : ContractId OptionTradeAcceptance
+      controller buyer
+      do
+        create OptionTradeAcceptance with
+          seller
+          buyer
+          optionCid
+          offerPrice
+          currency
+    
+    -- | Seller cancels the trade offer
+    choice CancelOptionTrade : ()
+      controller seller
+      do
+        return ()
+
+-- | Buyer's acceptance of a trade offer - seller completes the transfer
+template OptionTradeAcceptance
+  with
+    seller : Party
+    buyer : Party
+    optionCid : ContractId AssetOption
+    offerPrice : Decimal
+    currency : Text
+  where
+    signatory buyer, seller  -- Both parties sign the acceptance
+    
+    -- | Complete the trade by transferring the option
+    choice CompleteTrade : ContractId AssetOption
+      controller seller
+      do
+        exercise optionCid TransferOption with newHolder = buyer
+
+-- | Helper data structure for option trading
+data OptionData = OptionData with
+    issuer : Party
+    underlying : AssetDetails
+    strikePrice : Decimal
+    expiryDate : Date
+    optionType : Text
+  deriving (Eq, Show)
+

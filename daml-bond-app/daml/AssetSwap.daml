@@ -1,0 +1,227 @@
+-- Asset Swap Application
+-- Generic atomic swaps for any DAML contract type using Contract IDs
+
+module AssetSwap where
+
+import DA.Optional
+
+-- | Generic asset description for swap coordination
+data AssetDescription = AssetDescription with
+    contractId : Text           -- String representation of the contract ID
+    assetType : Text           -- Type of asset (Bond, Token, NFT, etc.)
+    description : Text         -- Human-readable description
+    quantity : Optional Decimal -- Optional quantity/amount
+  deriving (Eq, Show)
+
+-- | Two-party swap proposal
+template SwapProposal
+  with
+    proposer : Party           -- Party initiating the swap
+    counterparty : Party       -- Other party in the swap
+    proposerAssets : [AssetDescription]     -- Assets offered by proposer
+    counterpartyAssets : [AssetDescription] -- Assets requested from counterparty
+    swapId : Text             -- Unique identifier for this swap
+    description : Text        -- Description of the swap
+    expirationDate : Optional Text -- Optional expiration date
+  where
+    signatory proposer
+    observer counterparty
+    
+    ensure length proposerAssets > 0 && length counterpartyAssets > 0
+    
+    -- | Counterparty accepts the swap
+    choice AcceptSwap : ContractId SwapAgreement
+      controller counterparty
+      do
+        create SwapAgreement with
+          party1 = proposer
+          party2 = counterparty
+          party1Assets = proposerAssets
+          party2Assets = counterpartyAssets
+          swapId
+          description
+          status = "Pending"
+    
+    -- | Proposer cancels the swap before acceptance
+    choice CancelSwap : ()
+      controller proposer
+      do
+        return ()
+    
+    -- | Counterparty rejects the swap
+    choice RejectSwap : ()
+      controller counterparty
+      do
+        return ()
+    
+    -- | Proposer updates the swap terms before acceptance
+    choice UpdateSwap : ContractId SwapProposal
+      with
+        newProposerAssets : [AssetDescription]
+        newCounterpartyAssets : [AssetDescription]
+        newDescription : Text
+      controller proposer
+      do
+        create this with
+          proposerAssets = newProposerAssets
+          counterpartyAssets = newCounterpartyAssets
+          description = newDescription
+
+-- | Agreed swap awaiting execution
+template SwapAgreement
+  with
+    party1 : Party
+    party2 : Party
+    party1Assets : [AssetDescription]
+    party2Assets : [AssetDescription]
+    swapId : Text
+    description : Text
+    status : Text
+  where
+    signatory party1, party2
+    
+    -- | Mark swap as completed (after off-chain asset transfers)
+    choice CompleteSwap : ContractId SwapCompletion
+      with
+        completedBy : Party
+      controller completedBy
+      do
+        create SwapCompletion with
+          party1
+          party2
+          party1Assets
+          party2Assets
+          swapId
+          description
+          completedDate = "2025-11-27" -- In production, use actual date
+    
+    -- | Initiate dispute if something goes wrong
+    choice InitiateDispute : ContractId SwapDispute
+      with
+        disputingParty : Party
+        reason : Text
+      controller disputingParty
+      do
+        create SwapDispute with
+          party1
+          party2
+          party1Assets
+          party2Assets
+          swapId
+          disputingParty
+          reason
+          resolutionStatus = "Open"
+    
+    -- | Cancel by mutual agreement
+    choice MutualCancel : ()
+      controller party1, party2
+      do
+        return ()
+
+-- | Completed swap record
+template SwapCompletion
+  with
+    party1 : Party
+    party2 : Party
+    party1Assets : [AssetDescription]
+    party2Assets : [AssetDescription]
+    swapId : Text
+    description : Text
+    completedDate : Text
+  where
+    signatory party1, party2
+    
+    ensure length party1Assets > 0 && length party2Assets > 0
+
+-- | Dispute resolution workflow
+template SwapDispute
+  with
+    party1 : Party
+    party2 : Party
+    party1Assets : [AssetDescription]
+    party2Assets : [AssetDescription]
+    swapId : Text
+    disputingParty : Party
+    reason : Text
+    resolutionStatus : Text
+  where
+    signatory party1, party2
+    
+    -- | Resolve dispute with mutual agreement
+    choice ResolveDispute : ()
+      with
+        resolution : Text
+      controller party1, party2
+      do
+        return ()
+    
+    -- | Provide counter-evidence
+    choice ProvideEvidence : ContractId SwapDispute
+      with
+        providingParty : Party
+        evidence : Text
+      controller providingParty
+      do
+        create this with
+          resolutionStatus = "Under Review"
+
+-- | Multi-party swap proposal (3+ parties)
+template MultiPartySwapProposal
+  with
+    initiator : Party
+    participants : [Party]     -- All other participants
+    swapId : Text
+    description : Text
+    assets : [(Party, [AssetDescription])]  -- Assets per party
+  where
+    signatory initiator
+    observer participants
+    
+    ensure length participants >= 2
+    
+    -- | Participant accepts their part of the swap
+    choice AcceptMultiPartySwap : ContractId MultiPartySwapAgreement
+      with
+        acceptingParty : Party
+      controller acceptingParty
+      do
+        create MultiPartySwapAgreement with
+          allParties = initiator :: participants
+          swapId
+          description
+          assets
+          acceptedBy = [acceptingParty]
+          status = "Partially Accepted"
+    
+    -- | Cancel the multi-party swap
+    choice CancelMultiPartySwap : ()
+      controller initiator
+      do
+        return ()
+
+-- | Multi-party swap agreement
+template MultiPartySwapAgreement
+  with
+    allParties : [Party]
+    swapId : Text
+    description : Text
+    assets : [(Party, [AssetDescription])]
+    acceptedBy : [Party]
+    status : Text
+  where
+    signatory allParties
+    
+    -- | Complete the multi-party swap
+    choice CompleteMultiPartySwap : ()
+      with
+        completingParty : Party
+      controller completingParty
+      do
+        return ()
+    
+    -- | Cancel by unanimous agreement
+    choice UnanimousCancel : ()
+      controller allParties
+      do
+        return ()
+
