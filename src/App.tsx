@@ -22,8 +22,11 @@ function App() {
       const hash = window.location.hash.slice(1) // Remove #
       if (hash === 'showcases') {
         setCurrentPage('showcases')
+        // Scroll to top when navigating to showcases
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       } else {
         setCurrentPage('home')
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       }
     }
     
@@ -120,7 +123,7 @@ function App() {
       <main>
         <section id="home">
           <h1>DAML Autopilot</h1>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 400, margin認識: '1rem 0', color: 'var(--pico-muted-color)' }}>Precision Tools for Financial Infrastructure</h2>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 400, margin: '1rem 0', color: 'var(--pico-muted-color)' }}>Precision Tools for Financial Infrastructure</h2>
           <p>
             Production-ready developer tools and automation for DAML smart contracts. 
             Built for precision and safety.

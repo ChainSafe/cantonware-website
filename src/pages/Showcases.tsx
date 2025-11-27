@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import '../App.css'
 
 export function Showcases() {
@@ -10,6 +10,11 @@ export function Showcases() {
     workflow: []
   })
   const [workflowExpanded, setWorkflowExpanded] = useState(false)
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [])
 
   const openCodeModal = (code: string, title: string, workflow: string[]) => {
     setCodeModal({ isOpen: true, code, title, workflow })
