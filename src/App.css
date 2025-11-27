@@ -124,10 +124,10 @@ section#screenshots > p {
   display: flex;
   gap: calc(var(--pico-spacing) * 1.5);
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: visible;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding: calc(var(--pico-spacing) * 1) 0;
+  padding: calc(var(--pico-spacing) * 2) calc(var(--pico-spacing) * 0.5);
   margin: calc(var(--pico-spacing) * 2) 0;
 }
 
@@ -154,7 +154,6 @@ section#screenshots > p {
   margin: 0;
   border: 1px solid transparent;
   border-radius: var(--pico-border-radius);
-  overflow: hidden;
   scroll-snap-align: start;
   cursor: pointer;
   background: 
@@ -182,6 +181,8 @@ section#screenshots > p {
   height: auto;
   display: block;
   border-bottom: 1px solid rgba(var(--pico-primary-rgb), 0.2);
+  border-radius: var(--pico-border-radius) var(--pico-border-radius) 0 0;
+  overflow: hidden;
 }
 
 .screenshot-item figcaption {
