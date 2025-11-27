@@ -491,11 +491,11 @@ function App() {
               className="screenshot-item"
               onClick={() => setLightboxImage({ 
                 src: '/screenshots/screenshot-4.png', 
-                caption: 'Zero Shot a Kids Allowance App' 
+                caption: 'Zero shot a kids allowance app' 
               })}
             >
               <img src="/screenshots/screenshot-4.png" alt="Progressive context building" loading="lazy" />
-              <figcaption>Zero Shot a Kids Allowance App</figcaption>
+              <figcaption>Zero shot a kids allowance app</figcaption>
             </figure>
           </div>
         </section>
