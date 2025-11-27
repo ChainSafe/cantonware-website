@@ -127,7 +127,7 @@ section#screenshots > p {
   overflow-y: visible;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding: calc(var(--pico-spacing) * 2) calc(var(--pico-spacing) * 0.5);
+  padding: calc(var(--pico-spacing) * 2) calc(var(--pico-spacing) * 0.5) calc(var(--pico-spacing) * 2.5);
   margin: calc(var(--pico-spacing) * 2) 0;
 }
 
