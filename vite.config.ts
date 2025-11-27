@@ -4,7 +4,13 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 // For GitHub Pages, set base to '/repo-name/' if not using custom domain
 // For user/organization pages (username.github.io), use '/'
+// For IPFS deployment, VITE_BASE_PATH can override this
 const getBase = () => {
+  // Allow explicit override for IPFS deployment
+  if (process.env.VITE_BASE_PATH) {
+    return process.env.VITE_BASE_PATH
+  }
+  
   if (process.env.GITHUB_REPOSITORY) {
     const repoName = process.env.GITHUB_REPOSITORY.split('/')[1]
     // If it's a user/org page (ends with .github.io), use root
