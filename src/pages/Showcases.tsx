@@ -213,33 +213,6 @@ export function Showcases() {
             </div>
 
             <details>
-              <summary>View Use Cases</summary>
-              <div style={{ padding: '1rem' }}>
-                <h4>Bond Portfolio Rebalancing</h4>
-                <p style={{ fontSize: '0.9rem' }}>
-                  <strong>Party A:</strong> 4% Bond maturing 2028, $50k<br/>
-                  <strong>Party B:</strong> 5% Bond maturing 2030, $60k<br/>
-                  <strong>Result:</strong> Atomic swap of different duration bonds
-                </p>
-
-                <h4>Multi-Asset Exchange</h4>
-                <p style={{ fontSize: '0.9rem' }}>
-                  <strong>Trader 1:</strong> [3% USD Bond $25k + 3.5% EUR Bond €30k]<br/>
-                  <strong>Trader 2:</strong> [6% USD Bond $75k]<br/>
-                  <strong>Result:</strong> 2-for-1 bond swap
-                </p>
-
-                <h4>Three-Way Asset Swap</h4>
-                <p style={{ fontSize: '0.9rem' }}>
-                  <strong>Alice:</strong> Rare Digital Art NFT<br/>
-                  <strong>Bob:</strong> 500 Premium Tokens<br/>
-                  <strong>Charlie:</strong> Corporate Bond $100k<br/>
-                  <strong>Result:</strong> Simultaneous 3-party exchange
-                </p>
-              </div>
-            </details>
-
-            <details>
               <summary>View Code Example</summary>
               <figure style={{ marginTop: '1rem' }}>
                 <figcaption>Creating a swap proposal</figcaption>
@@ -409,9 +382,11 @@ template SwapAgreement
         <section id="fixed-rate-bond" style={{ marginTop: '3rem' }}>
           <article className="demo-card">
             <header>
-                  <div>
-                    <h2 style={{ margin: 0 }}>Fixed Rate Bond Application</h2>
-                    <small style={{ color: 'var(--pico-muted-color)' }}>Complete bond lifecycle management</small>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+                <div>
+                  <h2 style={{ margin: 0 }}>Fixed Rate Bond Application</h2>
+                  <small style={{ color: 'var(--pico-muted-color)' }}>Complete bond lifecycle management</small>
+                </div>
               </div>
             </header>
             
@@ -458,29 +433,6 @@ template SwapAgreement
                 </p>
               </div>
             </div>
-
-            <details>
-              <summary>View Features</summary>
-              <div style={{ padding: '1rem' }}>
-                <h4>Bond Characteristics</h4>
-                <ul style={{ fontSize: '0.9rem', lineHeight: '1.8' }}>
-                  <li>ISIN (International Securities Identification Number)</li>
-                  <li>Denomination (face value)</li>
-                  <li>Currency support (USD, EUR, etc.)</li>
-                  <li>Issue and maturity dates</li>
-                  <li>Coupon rate (annual interest rate)</li>
-                  <li>Coupon frequency (semi-annual, quarterly, monthly, annual)</li>
-                </ul>
-
-                <h4>Workflows</h4>
-                <ul style={{ fontSize: '0.9rem', lineHeight: '1.8' }}>
-                  <li><strong>Issuance:</strong> Issuer creates request → Investor accepts → Bond created</li>
-                  <li><strong>Coupon Payment:</strong> Issuer pays periodic interest to bond holder</li>
-                  <li><strong>Trading:</strong> Buyer proposes trade → Seller accepts → Atomic transfer</li>
-                  <li><strong>Redemption:</strong> Issuer returns principal at maturity</li>
-                </ul>
-              </div>
-            </details>
 
             <details>
               <summary>View Code Example</summary>
@@ -612,9 +564,11 @@ template Bond
         <section id="asset-option" style={{ marginTop: '3rem' }}>
           <article className="demo-card">
             <header>
-              <div>
-                <h2 style={{ margin: 0 }}>Asset Option Application</h2>
-                <small style={{ color: 'var(--pico-muted-color)' }}>Financial options for buying assets at strike prices</small>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+                <div>
+                  <h2 style={{ margin: 0 }}>Asset Option Application</h2>
+                  <small style={{ color: 'var(--pico-muted-color)' }}>Financial options for buying assets at strike prices</small>
+                </div>
               </div>
             </header>
 
@@ -661,34 +615,6 @@ template Bond
                 </p>
               </div>
             </div>
-
-            <details>
-              <summary>View Use Cases</summary>
-              <div style={{ padding: '1rem' }}>
-                <h4>Stock Purchase Option</h4>
-                <p style={{ fontSize: '0.9rem' }}>
-                  <strong>Grant:</strong> Right to buy 100 TechCorp shares at $50/share<br/>
-                  <strong>Premium:</strong> $500 paid upfront<br/>
-                  <strong>Expiry:</strong> December 31, 2026<br/>
-                  <strong>Result:</strong> Holder can exercise if price rises above $50
-                </p>
-
-                <h4>Bond Purchase Right</h4>
-                <p style={{ fontSize: '0.9rem' }}>
-                  <strong>Grant:</strong> Right to buy $100k corporate bond at $95k (discount)<br/>
-                  <strong>Premium:</strong> $5,000<br/>
-                  <strong>Expiry:</strong> June 30, 2026<br/>
-                  <strong>Result:</strong> Lock in favorable bond pricing
-                </p>
-
-                <h4>Multi-Asset Portfolio</h4>
-                <p style={{ fontSize: '0.9rem' }}>
-                  <strong>Option 1:</strong> 200 Tech shares at $10k (expires Dec 2026)<br/>
-                  <strong>Option 2:</strong> $50k Corporate Bond at $48k (expires Jun 2027)<br/>
-                  <strong>Result:</strong> Diversified option portfolio management
-                </p>
-              </div>
-            </details>
 
             <details>
               <summary>View Code Example</summary>
