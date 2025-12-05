@@ -40,13 +40,14 @@ jobs:
           storacha-key: ${{ secrets.STORACHA_KEY }}
           storacha-proof: ${{ secrets.STORACHA_PROOF }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          pinata-jwt-token: ${{ secrets.PINATA_JWT }}
 
       - name: Update DNSLink
         uses: ipshipyard/dnslink-action@v1
         if: github.ref == 'refs/heads/main' # only update the DNSLink on the main branch
         with:
           cid: ${{ steps.deploy.outputs.cid }}
-          dnslink_domain: cantonware.xyz
+          dnslink_domain: daml-autopilot.chainsafe.io
           cf_record_id: ${{ secrets.CLOUDFLARE_RECORD_ID }}
           cf_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           cf_auth_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -55,6 +56,7 @@ jobs:
       - name: Summary
         run: |
           echo "✅ Deployment to IPFS complete"
-          echo "CID: ${{ steps.storacha.outputs.cid }}"
-          echo "IPFS Gateway URL: https://ipfs.orbitor.dev/ipfs/${{ steps.storacha.outputs.cid }}"
-          echo "Live page: https://cantonware.xyz"
+          echo "CID: ${{ steps.deploy.outputs.cid }}"
+          echo "IPFS Gateway URL: https://ipfs.orbitor.dev/ipfs/${{ steps.deploy.outputs.cid }}"
+          echo "DNSLink domain: https://daml-autopilot.chainsafe.io"
+          echo "Pinata pinned: ✅ (CID available on IPFS network)"
