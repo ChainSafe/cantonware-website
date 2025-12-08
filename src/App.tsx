@@ -1,5 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { Showcases } from './pages/Showcases'
 import './App.css'
 
@@ -8,6 +11,15 @@ function App() {
   const [isDark, setIsDark] = useState(true)
   const [lightboxImage, setLightboxImage] = useState<{ src: string; caption: string } | null>(null)
   const [currentPage, setCurrentPage] = useState<'home' | 'showcases'>('home')
+  const [copied, setCopied] = useState(false)
+  const [activeScreenshot, setActiveScreenshot] = useState(0)
+  const carouselRef = useRef<HTMLDivElement>(null)
+
+  // MCP config for Cursor - base64 decoded from the URL
+  const mcpConfig = {
+    type: "sse",
+    url: "http://91.99.186.83:7284/mcp"
+  }
 
   // Initialize theme on mount
   useEffect(() => {
@@ -47,6 +59,43 @@ function App() {
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
   }, [lightboxImage])
+
+  // Track carousel scroll position for indicators
+  useEffect(() => {
+    const carousel = carouselRef.current
+    if (!carousel) return
+
+    const handleScroll = () => {
+      const scrollLeft = carousel.scrollLeft
+      const itemWidth = 400 + 24 // screenshot width + gap
+      const activeIndex = Math.round(scrollLeft / itemWidth)
+      setActiveScreenshot(Math.min(activeIndex, 3)) // 4 screenshots, 0-indexed
+    }
+
+    carousel.addEventListener('scroll', handleScroll, { passive: true })
+    return () => carousel.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const copyMcpConfig = async () => {
+    const configStr = `{
+  "mcpServers": {
+    "daml-autopilot": {
+      "type": "sse",
+      "url": "${mcpConfig.url}"
+    }
+  }
+}`
+    await navigator.clipboard.writeText(configStr)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const scrollToScreenshot = (index: number) => {
+    const carousel = carouselRef.current
+    if (!carousel) return
+    const itemWidth = 400 + 24 // screenshot width + gap
+    carousel.scrollTo({ left: index * itemWidth, behavior: 'smooth' })
+  }
 
   const toggleCard = (cardId: string) => {
     setFlippedCards(prev => {
@@ -344,28 +393,77 @@ function App() {
                     </p>
                   </figure>
 
-                  <small style={{ display: 'block', textAlign: 'left', fontStyle: 'italic', marginTop: 'calc(var(--pico-spacing) * 0.5)' }}>
+                  <small style={{ display: 'block', textAlign: 'left', fontStyle: 'italic', marginTop: 'auto', paddingTop: 'calc(var(--pico-spacing) * 1)' }}>
                     We take precautions, not shortcuts. No guarantees of safe code, but honest analysis you can trust.
                   </small>
-
-                  <footer>
-                    <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                      <a 
-                        href="https://cursor.com/en-US/install-mcp?name=daml-autopilot&config=eyJ0eXBlIjoic3NlIiwidXJsIjoiaHR0cDovLzkxLjk5LjE4Ni44Mzo3Mjg0L21jcCJ9"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <img 
-                          src="https://cursor.com/deeplink/mcp-install-dark.svg" 
-                          alt="Install MCP Server"
-                          style={{ maxWidth: '400px', height: 'auto', width: '100%' }}
-                        />
-                      </a>
-                    </div>
-                  </footer>
                 </div>
               </motion.div>
             </motion.article>
+          </div>
+
+          <div className="mcp-install-section">
+            <div className="mcp-install-header">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"></path>
+                <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"></path>
+                <path d="M15 13a1 1 0 0 0-3 0c0 .345.157.653.395.864A3.982 3.982 0 0 1 12 16a3.982 3.982 0 0 1-.395-2.136A1 1 0 0 0 9 13"></path>
+                <path d="M18 12h1"></path>
+                <path d="M5 12h1"></path>
+                <path d="M12 2v1"></path>
+              </svg>
+              <h3>Install MCP Server</h3>
+            </div>
+            <p>Add to your <code>~/.cursor/mcp.json</code> file:</p>
+            <div className="mcp-config-standalone">
+              <SyntaxHighlighter
+                language="json"
+                style={isDark ? vscDarkPlus : oneLight}
+                customStyle={{
+                  margin: 0,
+                  padding: 'calc(var(--pico-spacing) * 1)',
+                  paddingRight: 'calc(var(--pico-spacing) * 6)',
+                  background: 'transparent',
+                  fontSize: '0.875rem',
+                  lineHeight: '1.6',
+                }}
+                codeTagProps={{
+                  style: {
+                    fontFamily: 'var(--pico-font-family-monospace)',
+                  }
+                }}
+              >
+                {`{
+  "mcpServers": {
+    "daml-autopilot": {
+      "type": "sse",
+      "url": "${mcpConfig.url}"
+    }
+  }
+}`}
+              </SyntaxHighlighter>
+              <button 
+                className="copy-btn-standalone" 
+                onClick={copyMcpConfig}
+                title="Copy to clipboard"
+              >
+                {copied ? (
+                  <>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    Copy
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </section>
 
@@ -456,7 +554,7 @@ function App() {
             Real examples of DAML Autopilot tools helping developers build safer smart contracts.
           </p>
           
-          <div className="screenshot-carousel">
+          <div className="screenshot-carousel" ref={carouselRef}>
             <figure 
               className="screenshot-item"
               onClick={() => setLightboxImage({ 
@@ -497,6 +595,18 @@ function App() {
               <img src="/screenshots/screenshot-4.png" alt="Progressive context building" loading="lazy" />
               <figcaption>Zero shot a kids allowance app</figcaption>
             </figure>
+          </div>
+          
+          <div className="scroll-indicators">
+            {[0, 1, 2, 3].map((index) => (
+              <button
+                key={index}
+                className={`scroll-dot ${activeScreenshot === index ? 'active' : ''}`}
+                onClick={() => scrollToScreenshot(index)}
+                aria-label={`Go to screenshot ${index + 1}`}
+              />
+            ))}
+            <span className="scroll-hint">← Swipe to explore →</span>
           </div>
         </section>
 

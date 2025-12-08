@@ -120,6 +120,116 @@ section#screenshots > p {
   font-size: 1.0625rem;
 }
 
+/* MCP Install Section */
+.mcp-install-section {
+  margin-top: calc(var(--pico-spacing) * 3);
+  padding: calc(var(--pico-spacing) * 2);
+  border: 1px solid transparent;
+  border-radius: var(--pico-border-radius);
+  background: 
+    linear-gradient(var(--pico-background-color), var(--pico-background-color)) padding-box,
+    linear-gradient(135deg, 
+      rgba(59, 130, 246, 0.3) 0%,
+      rgba(147, 51, 234, 0.3) 50%,
+      rgba(59, 130, 246, 0.3) 100%
+    ) border-box;
+  box-shadow: 
+    0 0 0 1px rgba(59, 130, 246, 0.1),
+    0 0.25rem 1rem rgba(59, 130, 246, 0.15);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mcp-install-header {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--pico-spacing) * 0.75);
+  margin-bottom: calc(var(--pico-spacing) * 1);
+  justify-content: center;
+}
+
+.mcp-install-header svg {
+  color: var(--pico-primary);
+  filter: drop-shadow(0 0 0.5rem rgba(var(--pico-primary-rgb), 0.4));
+}
+
+.mcp-install-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.mcp-install-section > p {
+  text-align: center;
+  color: var(--pico-muted-color);
+  margin-bottom: calc(var(--pico-spacing) * 1);
+  font-size: 0.95rem;
+}
+
+.mcp-install-section code {
+  background: rgba(var(--pico-primary-rgb), 0.15);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.mcp-config-standalone {
+  position: relative;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(var(--pico-primary-rgb), 0.25);
+  border-radius: var(--pico-border-radius);
+  overflow: hidden;
+}
+
+.mcp-config-standalone pre {
+  margin: 0 !important;
+  background: transparent !important;
+  overflow-x: auto;
+}
+
+/* Override syntax highlighter styles for better integration */
+.mcp-config-standalone pre code {
+  background: transparent !important;
+  color: inherit;
+}
+
+/* Adjust colors for better visibility in both themes */
+[data-theme="light"] .mcp-config-standalone {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .mcp-config-standalone pre {
+  background: rgba(0, 0, 0, 0.02) !important;
+}
+
+.copy-btn-standalone {
+  position: absolute;
+  top: calc(var(--pico-spacing) * 0.75);
+  right: calc(var(--pico-spacing) * 0.75);
+  background: rgba(var(--pico-primary-rgb), 0.2);
+  border: 1px solid rgba(var(--pico-primary-rgb), 0.4);
+  border-radius: var(--pico-border-radius);
+  padding: calc(var(--pico-spacing) * 0.4) calc(var(--pico-spacing) * 0.75);
+  cursor: pointer;
+  color: var(--pico-primary);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--pico-spacing) * 0.4);
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.copy-btn-standalone:hover {
+  background: rgba(var(--pico-primary-rgb), 0.35);
+  border-color: var(--pico-primary);
+  transform: translateY(-1px);
+}
+
+.copy-btn-standalone svg {
+  flex-shrink: 0;
+}
+
 .screenshot-carousel {
   display: flex;
   gap: calc(var(--pico-spacing) * 1.5);
@@ -127,8 +237,8 @@ section#screenshots > p {
   overflow-y: visible;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding: calc(var(--pico-spacing) * 2) calc(var(--pico-spacing) * 0.5) calc(var(--pico-spacing) * 2.5);
-  margin: calc(var(--pico-spacing) * 2) 0;
+  padding: calc(var(--pico-spacing) * 2) calc(var(--pico-spacing) * 0.5) calc(var(--pico-spacing) * 1);
+  margin: calc(var(--pico-spacing) * 2) 0 0 0;
 }
 
 .screenshot-carousel::-webkit-scrollbar {
@@ -190,6 +300,51 @@ section#screenshots > p {
   font-size: 0.875rem;
   color: var(--pico-muted-color);
   text-align: center;
+}
+
+/* Scroll Indicators */
+.scroll-indicators {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--pico-spacing) * 0.5);
+  padding: calc(var(--pico-spacing) * 1) 0 calc(var(--pico-spacing) * 2);
+}
+
+.scroll-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid rgba(var(--pico-primary-rgb), 0.4);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.scroll-dot:hover {
+  border-color: var(--pico-primary);
+  transform: scale(1.2);
+}
+
+.scroll-dot.active {
+  background: var(--pico-primary);
+  border-color: var(--pico-primary);
+  box-shadow: 0 0 8px rgba(var(--pico-primary-rgb), 0.5);
+}
+
+.scroll-hint {
+  margin-left: calc(var(--pico-spacing) * 1);
+  font-size: 0.75rem;
+  color: var(--pico-muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  animation: pulse-hint 2s ease-in-out infinite;
+}
+
+@keyframes pulse-hint {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
 }
 
 /* Lightbox */
