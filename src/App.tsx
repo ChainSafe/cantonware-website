@@ -15,11 +15,8 @@ function App() {
   const [activeScreenshot, setActiveScreenshot] = useState(0)
   const carouselRef = useRef<HTMLDivElement>(null)
 
-  // MCP config for Cursor - base64 decoded from the URL
-  const mcpConfig = {
-    type: "sse",
-    url: "http://91.99.186.83:7284/mcp"
-  }
+  const mcpBaseUrl = "http://91.99.186.83:7284/mcp"
+  const mcpTermsUrl = mcpBaseUrl.replace(/\/mcp\/?$/, '') + '/terms'
 
   // Initialize theme on mount
   useEffect(() => {
@@ -62,30 +59,27 @@ function App() {
 
   const SCREENSHOT_COUNT = 4
 
-  const getCarouselStep = (): number => {
-    const carousel = carouselRef.current
-    if (!carousel) return 424
-    const first = carousel.querySelector('.screenshot-item') as HTMLElement
-    if (!first) return 424
-    const gapStr = getComputedStyle(carousel).gap
-    const gapPx = gapStr ? parseFloat(gapStr) || 24 : 24
-    return first.offsetWidth + gapPx
+  function getStepPx(el: HTMLDivElement): number {
+    const first = el.querySelector('.screenshot-item') as HTMLElement
+    const gap = parseFloat(getComputedStyle(el).gap) || 24
+    return first ? first.offsetWidth + gap : 424
   }
 
-  // Track carousel scroll position for indicators
+  function getCarouselEl(): HTMLDivElement | null {
+    return document.getElementById('screenshot-carousel') as HTMLDivElement | null
+  }
+
   useEffect(() => {
-    const carousel = carouselRef.current
-    if (!carousel) return
-
-    const handleScroll = () => {
-      const step = getCarouselStep()
-      const activeIndex = Math.round(carousel.scrollLeft / step)
-      setActiveScreenshot(Math.min(Math.max(0, activeIndex), SCREENSHOT_COUNT - 1))
+    const el = carouselRef.current
+    if (!el) return
+    const onScroll = () => {
+      const step = getStepPx(el)
+      const i = step > 0 ? Math.round(el.scrollLeft / step) : 0
+      setActiveScreenshot(Math.max(0, Math.min(i, SCREENSHOT_COUNT - 1)))
     }
-
-    carousel.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll() // set initial dot
-    return () => carousel.removeEventListener('scroll', handleScroll)
+    el.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+    return () => el.removeEventListener('scroll', onScroll)
   }, [])
 
   const copyMcpConfig = async () => {
@@ -93,7 +87,7 @@ function App() {
   "mcpServers": {
     "daml-autopilot": {
       "type": "sse",
-      "url": "${mcpConfig.url}"
+      "url": "${mcpBaseUrl}?payerParty=YOUR_CANTON_PAYER_PARTY"
     }
   }
 }`
@@ -102,11 +96,27 @@ function App() {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const scrollToScreenshot = (index: number) => {
-    const carousel = carouselRef.current
-    if (!carousel) return
-    const step = getCarouselStep()
-    carousel.scrollTo({ left: index * step, behavior: 'smooth' })
+  const carouselPrev = () => {
+    const el = getCarouselEl()
+    if (!el) return
+    const step = getStepPx(el)
+    if (step <= 0) return
+    const currentIndex = Math.round(el.scrollLeft / step)
+    const prevIndex = Math.max(0, currentIndex - 1)
+    const target = prevIndex * step
+    el.scrollTo({ left: target, behavior: 'smooth' })
+  }
+
+  const carouselNext = () => {
+    const el = getCarouselEl()
+    if (!el) return
+    const step = getStepPx(el)
+    if (step <= 0) return
+    const maxScroll = el.scrollWidth - el.clientWidth
+    const currentIndex = Math.round(el.scrollLeft / step)
+    const nextIndex = Math.min(SCREENSHOT_COUNT - 1, currentIndex + 1)
+    const target = Math.min(maxScroll, nextIndex * step)
+    el.scrollTo({ left: target, behavior: 'smooth' })
   }
 
   const canScrollPrev = activeScreenshot > 0
@@ -428,7 +438,7 @@ function App() {
               </svg>
               <h3>Install MCP Server</h3>
             </div>
-            <p>Add to your <code>~/.cursor/mcp.json</code> file:</p>
+            <p>Add to your <code>~/.cursor/mcp.json</code> file. Include your Canton payer party in the URL so the server knows who you are:</p>
             <div className="mcp-config-standalone">
               <SyntaxHighlighter
                 language="json"
@@ -451,11 +461,16 @@ function App() {
   "mcpServers": {
     "daml-autopilot": {
       "type": "sse",
-      "url": "${mcpConfig.url}"
+      "url": "${mcpBaseUrl}?payerParty=YOUR_CANTON_PAYER_PARTY"
     }
   }
 }`}
               </SyntaxHighlighter>
+              <p className="mcp-config-note">Replace <code>YOUR_CANTON_PAYER_PARTY</code> with your Canton payer party (e.g. <code>x402-test-signer::0x...</code>).</p>
+              <p className="mcp-terms-notice">
+                Use of the MCP server is subject to our{' '}
+                <a href={mcpTermsUrl} target="_blank" rel="noopener noreferrer">Service terms</a>.
+              </p>
               <button 
                 className="copy-btn-standalone" 
                 onClick={copyMcpConfig}
@@ -570,7 +585,7 @@ function App() {
           </p>
           <p className="carousel-hint">Scroll or swipe to see more</p>
           
-          <div className="screenshot-carousel" ref={carouselRef}>
+          <div id="screenshot-carousel" className="screenshot-carousel" ref={carouselRef}>
             <figure 
               className="screenshot-item"
               onClick={() => setLightboxImage({ 
@@ -617,7 +632,7 @@ function App() {
             <button
               type="button"
               className="carousel-arrow carousel-prev"
-              onClick={() => scrollToScreenshot(activeScreenshot - 1)}
+              onClick={carouselPrev}
               disabled={!canScrollPrev}
               aria-label="Previous screenshot"
             >
@@ -628,7 +643,7 @@ function App() {
             <button
               type="button"
               className="carousel-arrow carousel-next"
-              onClick={() => scrollToScreenshot(activeScreenshot + 1)}
+              onClick={carouselNext}
               disabled={!canScrollNext}
               aria-label="Next screenshot"
             >
@@ -672,7 +687,10 @@ function App() {
       </main>
 
       <footer>
-        <small>&copy; 2025 DAML Autopilot. All rights reserved.</small>
+        <small>
+          &copy; 2026 DAML Autopilot.{' '}
+          <a href={mcpTermsUrl} target="_blank" rel="noopener noreferrer" className="footer-terms-link">Service terms</a>
+        </small>
       </footer>
     </div>
   )

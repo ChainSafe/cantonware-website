@@ -120,6 +120,11 @@ section#screenshots > p {
   font-size: 1.0625rem;
 }
 
+section#screenshots > p.carousel-hint {
+  max-width: none;
+  margin-bottom: calc(var(--pico-spacing) * 1);
+}
+
 /* MCP Install Section */
 .mcp-install-section {
   margin-top: calc(var(--pico-spacing) * 3);
@@ -230,11 +235,56 @@ section#screenshots > p {
   flex-shrink: 0;
 }
 
+.mcp-config-note {
+  margin: 0;
+  padding: calc(var(--pico-spacing) * 0.75) calc(var(--pico-spacing) * 1);
+  padding-top: 0;
+  font-size: 0.8rem;
+  color: var(--pico-muted-color);
+  border-top: 1px solid rgba(var(--pico-primary-rgb), 0.15);
+}
+
+.mcp-config-note code {
+  font-size: 0.85em;
+  padding: 0.1em 0.35em;
+}
+
+.mcp-terms-notice {
+  margin: 0;
+  padding: calc(var(--pico-spacing) * 0.5) calc(var(--pico-spacing) * 1);
+  padding-top: calc(var(--pico-spacing) * 0.25);
+  font-size: 0.8rem;
+  color: var(--pico-muted-color);
+}
+
+.mcp-terms-notice a {
+  color: var(--pico-muted-color);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.mcp-terms-notice a:hover {
+  color: var(--pico-primary);
+}
+
+footer .footer-terms-link {
+  color: var(--pico-muted-color);
+  text-decoration: none;
+}
+
+footer .footer-terms-link:hover {
+  color: var(--pico-primary);
+  text-decoration: underline;
+}
+
 .carousel-hint {
+  display: block;
+  width: 100%;
   text-align: center;
   font-size: 0.8rem;
   color: var(--pico-muted-color);
-  margin: calc(var(--pico-spacing) * -0.5) 0 calc(var(--pico-spacing) * 1) 0 !important;
+  margin: calc(var(--pico-spacing) * -0.5) auto calc(var(--pico-spacing) * 1) auto;
+  padding: 0;
 }
 
 .screenshot-carousel {
