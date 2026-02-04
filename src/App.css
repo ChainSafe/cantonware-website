@@ -267,14 +267,26 @@ section#screenshots > p.carousel-hint {
   color: var(--pico-primary);
 }
 
-footer .footer-terms-link {
+footer .footer-terms-link,
+.mcp-terms-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
   color: var(--pico-muted-color);
   text-decoration: none;
+  cursor: pointer;
 }
 
-footer .footer-terms-link:hover {
+footer .footer-terms-link:hover,
+.mcp-terms-link:hover {
   color: var(--pico-primary);
   text-decoration: underline;
+}
+
+.mcp-terms-notice .mcp-terms-link {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .carousel-hint {
@@ -485,6 +497,91 @@ footer .footer-terms-link:hover {
   background: var(--pico-primary);
   color: white;
   transform: scale(1.1);
+}
+
+/* Terms modal */
+.terms-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  padding: calc(var(--pico-spacing) * 2);
+  animation: fadeIn 0.2s ease;
+}
+
+.terms-modal {
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-border-color);
+  border-radius: var(--pico-border-radius);
+  max-width: 42rem;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.4);
+  animation: scaleIn 0.25s ease;
+}
+
+.terms-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--pico-spacing) * 1) calc(var(--pico-spacing) * 1.5);
+  border-bottom: 1px solid var(--pico-border-color);
+  flex-shrink: 0;
+}
+
+.terms-modal-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.terms-modal-close {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: var(--pico-muted-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.terms-modal-close:hover {
+  color: var(--pico-color);
+  background: var(--pico-card-background-color);
+}
+
+.terms-modal-body {
+  padding: calc(var(--pico-spacing) * 1.5);
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.terms-modal-loading,
+.terms-modal-error {
+  margin: 0;
+  color: var(--pico-muted-color);
+}
+
+.terms-modal-error a {
+  color: var(--pico-primary);
+}
+
+.terms-modal-content {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: var(--pico-font-family);
+  color: var(--pico-color);
 }
 
 section#contact {

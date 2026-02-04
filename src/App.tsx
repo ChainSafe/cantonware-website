@@ -13,6 +13,10 @@ function App() {
   const [currentPage, setCurrentPage] = useState<'home' | 'showcases'>('home')
   const [copied, setCopied] = useState(false)
   const [activeScreenshot, setActiveScreenshot] = useState(0)
+  const [termsModalOpen, setTermsModalOpen] = useState(false)
+  const [termsContent, setTermsContent] = useState<string | null>(null)
+  const [termsLoading, setTermsLoading] = useState(false)
+  const [termsError, setTermsError] = useState<string | null>(null)
   const carouselRef = useRef<HTMLDivElement>(null)
 
   const mcpBaseUrl = "http://91.99.186.83:7284/mcp"
@@ -46,16 +50,39 @@ function App() {
     return () => window.removeEventListener('hashchange', handleHashChange)
   }, [])
 
-  // Handle escape key for lightbox
+  // Handle escape key for lightbox and terms modal
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && lightboxImage) {
-        setLightboxImage(null);
+      if (e.key === 'Escape') {
+        if (lightboxImage) setLightboxImage(null);
+        if (termsModalOpen) setTermsModalOpen(false);
       }
     };
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
-  }, [lightboxImage])
+  }, [lightboxImage, termsModalOpen])
+
+  // Fetch terms when modal opens
+  useEffect(() => {
+    if (!termsModalOpen) return
+    setTermsLoading(true)
+    setTermsError(null)
+    setTermsContent(null)
+    fetch(mcpTermsUrl)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        return r.text()
+      })
+      .then((text) => {
+        setTermsContent(text)
+        setTermsError(null)
+      })
+      .catch(() => {
+        setTermsError('Could not load terms.')
+        setTermsContent(null)
+      })
+      .finally(() => setTermsLoading(false))
+  }, [termsModalOpen, mcpTermsUrl])
 
   const SCREENSHOT_COUNT = 4
 
@@ -199,7 +226,7 @@ function App() {
           <h1>DAML Autopilot</h1>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 400, margin: '1rem 0', color: 'var(--pico-muted-color)' }}>Precision Tools for Financial Infrastructure</h2>
           <p>
-            Production-ready developer tools and automation for DAML smart contracts. 
+            Developer tools and automation for DAML smart contracts. 
             Built for precision and safety.
           </p>
         </section>
@@ -469,7 +496,7 @@ function App() {
               <p className="mcp-config-note">Replace <code>YOUR_CANTON_PAYER_PARTY</code> with your Canton payer party (e.g. <code>x402-test-signer::0x...</code>).</p>
               <p className="mcp-terms-notice">
                 Use of the MCP server is subject to our{' '}
-                <a href={mcpTermsUrl} target="_blank" rel="noopener noreferrer">Service terms</a>.
+                <button type="button" className="mcp-terms-link" onClick={() => setTermsModalOpen(true)}>Service terms</button>.
               </p>
               <button 
                 className="copy-btn-standalone" 
@@ -689,9 +716,34 @@ function App() {
       <footer>
         <small>
           &copy; 2026 DAML Autopilot.{' '}
-          <a href={mcpTermsUrl} target="_blank" rel="noopener noreferrer" className="footer-terms-link">Service terms</a>
+          <button type="button" className="footer-terms-link" onClick={() => setTermsModalOpen(true)}>Service terms</button>
         </small>
       </footer>
+
+      {termsModalOpen && (
+        <div className="terms-modal-overlay" onClick={() => setTermsModalOpen(false)}>
+          <div className="terms-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="terms-modal-header">
+              <h3>Service terms</h3>
+              <button type="button" className="terms-modal-close" onClick={() => setTermsModalOpen(false)} aria-label="Close">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+            <div className="terms-modal-body">
+              {termsLoading && <p className="terms-modal-loading">Loading…</p>}
+              {termsError && (
+                <p className="terms-modal-error">
+                  {termsError}{' '}
+                  <a href={mcpTermsUrl} target="_blank" rel="noopener noreferrer">Open in new tab</a>
+                </p>
+              )}
+              {termsContent && <pre className="terms-modal-content">{termsContent}</pre>}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
