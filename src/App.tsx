@@ -60,19 +60,31 @@ function App() {
     return () => window.removeEventListener('keydown', handleEscape);
   }, [lightboxImage])
 
+  const SCREENSHOT_COUNT = 4
+
+  const getCarouselStep = (): number => {
+    const carousel = carouselRef.current
+    if (!carousel) return 424
+    const first = carousel.querySelector('.screenshot-item') as HTMLElement
+    if (!first) return 424
+    const gapStr = getComputedStyle(carousel).gap
+    const gapPx = gapStr ? parseFloat(gapStr) || 24 : 24
+    return first.offsetWidth + gapPx
+  }
+
   // Track carousel scroll position for indicators
   useEffect(() => {
     const carousel = carouselRef.current
     if (!carousel) return
 
     const handleScroll = () => {
-      const scrollLeft = carousel.scrollLeft
-      const itemWidth = 400 + 24 // screenshot width + gap
-      const activeIndex = Math.round(scrollLeft / itemWidth)
-      setActiveScreenshot(Math.min(activeIndex, 3)) // 4 screenshots, 0-indexed
+      const step = getCarouselStep()
+      const activeIndex = Math.round(carousel.scrollLeft / step)
+      setActiveScreenshot(Math.min(Math.max(0, activeIndex), SCREENSHOT_COUNT - 1))
     }
 
     carousel.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll() // set initial dot
     return () => carousel.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -93,9 +105,12 @@ function App() {
   const scrollToScreenshot = (index: number) => {
     const carousel = carouselRef.current
     if (!carousel) return
-    const itemWidth = 400 + 24 // screenshot width + gap
-    carousel.scrollTo({ left: index * itemWidth, behavior: 'smooth' })
+    const step = getCarouselStep()
+    carousel.scrollTo({ left: index * step, behavior: 'smooth' })
   }
+
+  const canScrollPrev = activeScreenshot > 0
+  const canScrollNext = activeScreenshot < SCREENSHOT_COUNT - 1
 
   const toggleCard = (cardId: string) => {
     setFlippedCards(prev => {
@@ -553,6 +568,7 @@ function App() {
           <p>
             Real examples of DAML Autopilot tools helping developers build safer smart contracts.
           </p>
+          <p className="carousel-hint">Scroll or swipe to see more</p>
           
           <div className="screenshot-carousel" ref={carouselRef}>
             <figure 
@@ -598,15 +614,28 @@ function App() {
           </div>
           
           <div className="scroll-indicators">
-            {[0, 1, 2, 3].map((index) => (
-              <button
-                key={index}
-                className={`scroll-dot ${activeScreenshot === index ? 'active' : ''}`}
-                onClick={() => scrollToScreenshot(index)}
-                aria-label={`Go to screenshot ${index + 1}`}
-              />
-            ))}
-            <span className="scroll-hint">← Swipe to explore →</span>
+            <button
+              type="button"
+              className="carousel-arrow carousel-prev"
+              onClick={() => scrollToScreenshot(activeScreenshot - 1)}
+              disabled={!canScrollPrev}
+              aria-label="Previous screenshot"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className="carousel-arrow carousel-next"
+              onClick={() => scrollToScreenshot(activeScreenshot + 1)}
+              disabled={!canScrollNext}
+              aria-label="Next screenshot"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
           </div>
         </section>
 
