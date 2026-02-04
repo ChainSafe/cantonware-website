@@ -734,9 +734,9 @@ function App() {
             <div className="terms-modal-body">
               {termsLoading && <p className="terms-modal-loading">Loading…</p>}
               {termsError && (
-                <p className="terms-modal-error">
-                  {termsError}{' '}
-                  <a href={mcpTermsUrl} target="_blank" rel="noopener noreferrer">Open in new tab</a>
+                <p className="terms-modal-fallback">
+                  Please review the service terms on the Canton MCP Server directly.{' '}
+                  <a href={mcpTermsUrl} target="_blank" rel="noopener noreferrer">View terms</a>
                 </p>
               )}
               {termsContent && <pre className="terms-modal-content">{termsContent}</pre>}

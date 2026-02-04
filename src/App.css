@@ -565,12 +565,12 @@ footer .footer-terms-link:hover,
 }
 
 .terms-modal-loading,
-.terms-modal-error {
+.terms-modal-fallback {
   margin: 0;
   color: var(--pico-muted-color);
 }
 
-.terms-modal-error a {
+.terms-modal-fallback a {
   color: var(--pico-primary);
 }
 
