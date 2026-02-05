@@ -739,7 +739,14 @@ function App() {
                   <a href={mcpTermsUrl} target="_blank" rel="noopener noreferrer">View terms</a>
                 </p>
               )}
-              {termsContent && <pre className="terms-modal-content">{termsContent}</pre>}
+              {termsContent && (
+                <>
+                  <pre className="terms-modal-content">{termsContent}</pre>
+                  <p className="terms-modal-source">
+                    <a href={mcpTermsUrl} target="_blank" rel="noopener noreferrer">View terms on Canton MCP Server</a>
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>

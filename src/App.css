@@ -584,6 +584,17 @@ footer .footer-terms-link:hover,
   color: var(--pico-color);
 }
 
+.terms-modal-source {
+  margin: calc(var(--pico-spacing) * 1) 0 0 0;
+  padding-top: calc(var(--pico-spacing) * 0.75);
+  border-top: 1px solid var(--pico-border-color);
+  font-size: 0.875rem;
+}
+
+.terms-modal-source a {
+  color: var(--pico-primary);
+}
+
 section#contact {
   text-align: center;
   padding: calc(var(--pico-spacing) * 2) 0;
